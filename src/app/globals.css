@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #00C4FF;
+  --secondary: #0A0A0A;
+  --accent: #FFFFFF;
+}
+
+.dark {
+  --primary: #00C4FF;
+  --secondary: #FFFFFF;
+  --accent: #0A0A0A;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-secondary text-accent font-futuristic;
+    overflow-x: hidden;
+  }
+}
+
+@layer components {
+  .holographic-text {
+    background: linear-gradient(45deg, #00C4FF, #FFFFFF, #00C4FF, #FFFFFF);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: holographic 4s linear infinite;
+  }
+  
+  .glass-effect {
+    background: rgba(0, 196, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 196, 255, 0.2);
+  }
+  
+  .ar-glow {
+    box-shadow: 0 0 20px rgba(0, 196, 255, 0.5);
+    transition: all 0.3s ease;
+  }
+  
+  .ar-glow:hover {
+    box-shadow: 0 0 40px rgba(0, 196, 255, 0.8);
+    transform: translateY(-2px);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(45deg, transparent, rgba(0, 196, 255, 0.3), transparent);
+    border-radius: 8px;
+    padding: 2px;
+  }
+  
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: linear-gradient(45deg, #00C4FF, transparent, #00C4FF);
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: xor;
+  }
+
+  .cyber-grid {
+    background-image: 
+      linear-gradient(rgba(0, 196, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 196, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .neon-border {
+    border: 2px solid #00C4FF;
+    box-shadow: 
+      0 0 10px #00C4FF,
+      inset 0 0 10px rgba(0, 196, 255, 0.1);
+  }
+}
+
+.cursor-glow {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cursor-glow:hover {
+  filter: drop-shadow(0 0 10px rgba(0, 196, 255, 0.7));
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #00C4FF, #0099CC);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #0099CC, #00C4FF);
+}
