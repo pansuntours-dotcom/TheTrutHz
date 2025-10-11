@@ -16,6 +16,7 @@ const config: Config = {
         'primary-dark': '#0099CC',
         'glass': 'rgba(255, 255, 255, 0.1)',
         'glass-dark': 'rgba(0, 0, 0, 0.3)',
+        border: 'rgba(255, 255, 255, 0.1)',
       },
       fontFamily: {
         'futuristic': ['Orbitron', 'Poppins', 'sans-serif'],
