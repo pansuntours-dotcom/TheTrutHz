@@ -82,7 +82,7 @@ export default function Footer() {
                       href={link.href}
                       className="flex items-center space-x-2 text-gray-300 hover:text-primary transition-colors duration-300 group"
                     >
-                      {link.icon && <link.icon className="w-4 h-4 group-hover:animate-pulse" />}
+                      {'icon' in link && link.icon && <link.icon className="w-4 h-4 group-hover:animate-pulse" />}
                       <span>{link.name}</span>
                     </Link>
                   </li>
