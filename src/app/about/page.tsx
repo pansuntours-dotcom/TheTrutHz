@@ -116,7 +116,6 @@ export default function AboutPage() {
       features: ["Multi-language support", "Global payments", "Enterprise tools"],
     },
   ];
-  //
   return (
     <div className="min-h-screen pt-24 pb-16 px-6 bg-gradient-to-br from-secondary via-gray-900 to-secondary">
       <div className="max-w-7xl mx-auto">
