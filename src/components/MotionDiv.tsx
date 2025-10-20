@@ -1,13 +1,11 @@
 "use client";
 
-import * as React from "react";
-import { motion, MotionProps } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
+import React from "react";
 
-// ✅ This ensures MotionDiv accepts all normal <div> props like className
-type MotionDivProps = React.HTMLAttributes<HTMLDivElement> & MotionProps;
-
-const MotionDiv: React.FC<MotionDivProps> = ({ children, ...rest }) => {
-  return <motion.div {...rest}>{children}</motion.div>;
+// This allows all standard div props including className
+const MotionDiv: React.FC<HTMLMotionProps<"div">> = (props) => {
+  return <motion.div {...props} />;
 };
 
 export default MotionDiv;
