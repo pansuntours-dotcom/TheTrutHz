@@ -3,9 +3,15 @@
 import { motion } from "framer-motion";
 import React from "react";
 
-// ✅ Correctly extend motion.div props so className and others work
-type MotionDivProps = React.ComponentProps<typeof motion.div>;
+type MotionDivProps = React.HTMLAttributes<HTMLDivElement> & {
+  initial?: Record<string, any>;
+  animate?: Record<string, any>;
+  transition?: Record<string, any>;
+};
 
-export default function MotionDiv(props: MotionDivProps) {
-  return <motion.div {...props} />;
+export default function MotionDiv({
+  children,
+  ...rest
+}: MotionDivProps) {
+  return <motion.div {...rest}>{children}</motion.div>;
 }
