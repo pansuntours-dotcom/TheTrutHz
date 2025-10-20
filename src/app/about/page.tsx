@@ -111,11 +111,13 @@ export default function AboutPage() {
       features: ["Brand partnerships", "NFT integration", "Cross-platform sync"]
     },
     {
-      quarter: "Q4 2024",
-      title: "Global Scale",
+            title: "Global Scale",
       status: "planned",
-      features: ["Multi-language support", "Global payments", "Enterprise tools"]
-    return (
+      features: ["Multi-language support", "Global payments", "Enterprise tools"],
+    },
+  ];
+
+  return (
     <div className="min-h-screen pt-24 pb-16 px-6 bg-gradient-to-br from-secondary via-gray-900 to-secondary">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
