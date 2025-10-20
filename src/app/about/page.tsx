@@ -123,13 +123,16 @@ export default function AboutPage() {
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 holographic-text">
-            THE FUTURE OF
+          <motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8 }}
+  className="text-center mb-20"
+>
+  <h1 className="text-5xl md:text-7xl font-bold mb-8 holographic-text">
+    THE FUTURE OF
+  </h1>
+</motion.div>
             <br />
             CONTENT CREATION
           </h1>
