@@ -2,15 +2,15 @@
 "use client";
 
 import React from "react";
-import { motion, HTMLMotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 
-// Typed motion div to avoid TypeScript errors
-const MotionDiv = motion.div as React.FC<HTMLMotionProps<"div">>;
+// Use motion.div directly — no manual casting, avoids Netlify TS errors
+const MotionDiv = motion.div;
 
 // Replace with your logo
 const logoUrl = "/logo.png";
 
-// Stripe pricing plans (replace priceId with your Stripe Price IDs)
+// Stripe pricing plans (replace priceId with your actual Stripe Price IDs)
 const pricingPlans = [
   {
     name: "Basic",
