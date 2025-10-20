@@ -1,10 +1,9 @@
 "use client";
 
-import { motion, HTMLMotionProps } from "framer-motion";
-import React, { PropsWithChildren } from "react";
+import { motion, MotionProps } from "framer-motion";
+import React, { HTMLAttributes } from "react";
 
-// Correctly typed MotionDiv that allows all div props including className
-type MotionDivProps = PropsWithChildren<HTMLMotionProps<"div">>;
+type MotionDivProps = MotionProps & HTMLAttributes<HTMLDivElement>;
 
 const MotionDiv: React.FC<MotionDivProps> = ({ children, ...props }) => {
   return <motion.div {...props}>{children}</motion.div>;
