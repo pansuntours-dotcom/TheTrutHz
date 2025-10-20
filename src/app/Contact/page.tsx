@@ -1,3 +1,4 @@
+// src/app/contact/page.tsx
 "use client";
 
 import React from "react";
@@ -12,46 +13,35 @@ export default function ContactPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-5xl font-bold mb-4">Contact The TrutHz</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Reach out with questions, feedback, or collaboration inquiries.
+        <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
+        <p className="text-lg text-gray-700">
+          Have questions? Reach out and we’ll get back to you as soon as possible.
         </p>
       </MotionDiv>
 
       <MotionDiv
-        className="max-w-2xl mx-auto bg-white rounded-xl shadow p-8 mb-16"
-        initial={{ opacity: 0, y: 30 }}
+        className="max-w-xl mx-auto space-y-6"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
       >
-        <form className="space-y-6">
-          <div>
-            <label className="block text-gray-700 mb-2">Name</label>
-            <input
-              type="text"
-              placeholder="Your name"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-2">Email</label>
-            <input
-              type="email"
-              placeholder="you@example.com"
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-2">Message</label>
-            <textarea
-              placeholder="Your message"
-              className="w-full border border-gray-300 rounded-lg p-3 h-32 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
-          >
+        <form className="flex flex-col space-y-4">
+          <input
+            type="text"
+            placeholder="Your Name"
+            className="p-3 border border-gray-300 rounded"
+          />
+          <input
+            type="email"
+            placeholder="Your Email"
+            className="p-3 border border-gray-300 rounded"
+          />
+          <textarea
+            placeholder="Message"
+            className="p-3 border border-gray-300 rounded"
+            rows={5}
+          />
+          <button className="bg-blue-600 text-white py-3 rounded hover:bg-blue-700">
             Send Message
           </button>
         </form>
