@@ -1,10 +1,10 @@
 "use client";
 
-import { motion, MotionProps } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 import React from "react";
 
-// Forward ref to motion.div to satisfy TS and Next.js 14
-type MotionDivProps = MotionProps & React.HTMLAttributes<HTMLDivElement>;
+// This combines motion props and normal div props correctly for Next.js 14 + TS
+type MotionDivProps = HTMLMotionProps<"div"> & { children?: React.ReactNode };
 
 const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
   ({ children, ...props }, ref) => {
