@@ -3,13 +3,16 @@
 import { motion, HTMLMotionProps } from "framer-motion";
 import React from "react";
 
-// This combines motion props and normal div props correctly for Next.js 14 + TS
-type MotionDivProps = HTMLMotionProps<"div"> & { children?: React.ReactNode };
+// Extend HTMLMotionProps<"div"> and explicitly allow className
+type MotionDivProps = HTMLMotionProps<"div"> & {
+  children?: React.ReactNode;
+  className?: string;
+};
 
 const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
-  ({ children, ...props }, ref) => {
+  ({ children, className, ...props }, ref) => {
     return (
-      <motion.div ref={ref} {...props}>
+      <motion.div ref={ref} className={className} {...props}>
         {children}
       </motion.div>
     );
