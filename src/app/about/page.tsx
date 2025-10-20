@@ -1,82 +1,101 @@
 "use client";
 
 import React from "react";
-import MotionDiv from "@/components/MotionDiv"; // <-- uses the reusable motion wrapper
+import MotionDiv from "@/components/MotionDiv";
 
-export default function AboutPage() {
+const AboutPage: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-16 bg-gradient-to-b from-gray-50 to-white text-gray-800">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-[#0b0b0b] text-gray-100 py-16 px-6 sm:px-12 lg:px-24">
+      {/* Hero / Header */}
       <MotionDiv
+        initial={{ opacity: 0, y: -25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
         className="text-center mb-16"
+      >
+        <h1 className="text-5xl font-bold tracking-tight text-white">
+          About The TrutHz
+        </h1>
+        <p className="text-gray-400 mt-3 max-w-2xl mx-auto">
+          Amplifying truth. Empowering voices. Shaping the new digital discourse.
+        </p>
+      </MotionDiv>
+
+      {/* Mission */}
+      <MotionDiv
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
+        className="max-w-4xl mx-auto mb-20 text-center"
       >
-        <h1 className="text-5xl font-bold mb-4">About The TrutHz</h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          The TrutHz is a platform dedicated to transparency, authenticity, and community-driven discovery.
-          We believe in giving creators and audiences a place where truth and creativity align.
+        <p className="text-lg text-gray-300 leading-relaxed">
+          The TrutHz is a next-generation media and knowledge platform built for
+          authenticity, creative freedom, and community-driven evolution. We
+          believe in empowering people to speak boldly, connect deeply, and
+          share insight responsibly.
+        </p>
+        <p className="mt-6 text-lg text-gray-300 leading-relaxed">
+          Every article, every video, every connection on The TrutHz is part of
+          a collective rhythm — one that challenges the noise and champions
+          meaningful truth in every form.
         </p>
       </MotionDiv>
 
-      {/* Mission Section */}
+      {/* Values */}
       <MotionDiv
-        className="max-w-3xl text-center mb-20"
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
+        transition={{ duration: 1 }}
+        className="grid grid-cols-1 sm:grid-cols-3 gap-10"
       >
-        <h2 className="text-3xl font-semibold mb-6">Our Mission</h2>
-        <p className="text-gray-700 leading-relaxed">
-          Our mission is to empower creators and thinkers to share real perspectives in a digital world
-          often clouded by noise. We aim to build technology that amplifies authenticity and helps users
-          discover meaning, not just content.
-        </p>
-      </MotionDiv>
+        <div className="bg-gradient-to-br from-[#111] to-[#1a1a1a] border border-gray-800 rounded-2xl p-6 hover:border-[#ff0055] transition">
+          <h3 className="text-2xl font-semibold text-white mb-2">Truth</h3>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            We exist to restore trust in information by empowering creators to
+            publish transparently and thoughtfully.
+          </p>
+        </div>
 
-      {/* Team Section */}
-      <MotionDiv
-        className="max-w-4xl text-center mb-20"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-      >
-        <h2 className="text-3xl font-semibold mb-6">Meet the Team</h2>
-        <p className="text-gray-700 leading-relaxed mb-8">
-          We’re a small but passionate group of developers, designers, and dreamers driven by the same vision:
-          to redefine the digital narrative through truth and creativity.
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {[
-            { name: "Paul Nyamweya", role: "Founder & Visionary" },
-            { name: "Alex Rivera", role: "Lead Developer" },
-            { name: "Jamie Chen", role: "Creative Director" },
-          ].map((member, index) => (
-            <div
-              key={index}
-              className="bg-white shadow-md rounded-lg p-6 hover:shadow-xl transition-shadow"
-            >
-              <h3 className="text-xl font-semibold">{member.name}</h3>
-              <p className="text-gray-500">{member.role}</p>
-            </div>
-          ))}
+        <div className="bg-gradient-to-br from-[#111] to-[#1a1a1a] border border-gray-800 rounded-2xl p-6 hover:border-[#00c6ff] transition">
+          <h3 className="text-2xl font-semibold text-white mb-2">Innovation</h3>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            The TrutHz merges AI tools and human creativity to create a smarter,
+            fairer ecosystem for knowledge exchange.
+          </p>
+        </div>
+
+        <div className="bg-gradient-to-br from-[#111] to-[#1a1a1a] border border-gray-800 rounded-2xl p-6 hover:border-[#ffaa00] transition">
+          <h3 className="text-2xl font-semibold text-white mb-2">Community</h3>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            We cultivate respectful dialogue and global collaboration around
+            ideas that move humanity forward.
+          </p>
         </div>
       </MotionDiv>
 
-      {/* Closing Section */}
+      {/* Call to Action */}
       <MotionDiv
-        className="text-center max-w-2xl"
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
+        transition={{ duration: 1.2 }}
+        className="text-center mt-24"
       >
-        <h2 className="text-2xl font-semibold mb-4">Join the Movement</h2>
-        <p className="text-gray-600">
-          Whether you’re a creator, thinker, or supporter — The TrutHz welcomes you to be part of
-          something bigger. Together, we can shift the digital frequency toward truth.
+        <h2 className="text-3xl font-semibold text-white mb-4">
+          Be Part of the Frequency.
+        </h2>
+        <p className="text-gray-400 max-w-xl mx-auto mb-8">
+          Join the movement redefining truth in the digital age. Whether you’re
+          a creator, thinker, or innovator — your voice matters here.
         </p>
+        <a
+          href="/signup"
+          className="inline-block bg-[#ff0055] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#ff2266] transition"
+        >
+          Join The TrutHz
+        </a>
       </MotionDiv>
     </div>
   );
-}
+};
+
+export default AboutPage;
