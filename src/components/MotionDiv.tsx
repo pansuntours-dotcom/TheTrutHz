@@ -3,11 +3,19 @@
 import { motion, MotionProps } from "framer-motion";
 import React from "react";
 
-// Fully typed motion div that allows className, style, children, and motion props
+// Forward ref to motion.div to satisfy TS and Next.js 14
 type MotionDivProps = MotionProps & React.HTMLAttributes<HTMLDivElement>;
 
-const MotionDiv: React.FC<MotionDivProps> = ({ children, ...props }) => {
-  return <motion.div {...props}>{children}</motion.div>;
-};
+const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
+  ({ children, ...props }, ref) => {
+    return (
+      <motion.div ref={ref} {...props}>
+        {children}
+      </motion.div>
+    );
+  }
+);
+
+MotionDiv.displayName = "MotionDiv";
 
 export default MotionDiv;
