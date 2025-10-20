@@ -2,10 +2,11 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-// Use motion.div directly — no manual casting, avoids Netlify TS errors
-const MotionDiv = motion.div;
+// Correctly typed MotionDiv to avoid Netlify TypeScript errors
+type DivProps = HTMLMotionProps<"div">;
+const MotionDiv: React.FC<DivProps> = (props) => <motion.div {...props} />;
 
 // Replace with your logo
 const logoUrl = "/logo.png";
