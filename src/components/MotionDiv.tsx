@@ -3,19 +3,11 @@
 import { motion, HTMLMotionProps } from "framer-motion";
 import React from "react";
 
+// This allows passing normal HTML props (like className) safely
 type MotionDivProps = HTMLMotionProps<"div"> & {
   children?: React.ReactNode;
-  className?: string;
 };
 
-const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
-  ({ children, className, ...props }, ref) => (
-    <motion.div ref={ref} className={className} {...props}>
-      {children}
-    </motion.div>
-  )
-);
-
-MotionDiv.displayName = "MotionDiv";
-
-export default MotionDiv;
+export default function MotionDiv({ children, ...rest }: MotionDivProps) {
+  return <motion.div {...rest}>{children}</motion.div>;
+}
