@@ -6,7 +6,6 @@ import MotionDiv from "@/components/MotionDiv";
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900 px-6 sm:px-12 lg:px-24 py-20">
-      {/* Hero Section */}
       <MotionDiv
         className="text-center mb-16"
         initial={{ opacity: 0, y: 20 }}
@@ -15,12 +14,10 @@ export default function ContactPage() {
       >
         <h1 className="text-5xl font-bold mb-4">Contact The TrutHz</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          We’d love to hear from you! Reach out with questions, feedback, or
-          collaboration inquiries.
+          Reach out with questions, feedback, or collaboration inquiries.
         </p>
       </MotionDiv>
 
-      {/* Contact Form Section */}
       <MotionDiv
         className="max-w-2xl mx-auto bg-white rounded-xl shadow p-8 mb-16"
         initial={{ opacity: 0, y: 30 }}
@@ -58,36 +55,6 @@ export default function ContactPage() {
             Send Message
           </button>
         </form>
-      </MotionDiv>
-
-      {/* Contact Info Section */}
-      <MotionDiv
-        className="text-center max-w-2xl mx-auto"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <h2 className="text-3xl font-semibold mb-4">Other Ways to Reach Us</h2>
-        <p className="text-gray-600 mb-2">
-          Email:{" "}
-          <a
-            href="mailto:support@thetruthz.live"
-            className="text-indigo-600 hover:underline"
-          >
-            support@thetruthz.live
-          </a>
-        </p>
-        <p className="text-gray-600">
-          Twitter:{" "}
-          <a
-            href="https://twitter.com/thetruthz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-indigo-600 hover:underline"
-          >
-            @TheTrutHz
-          </a>
-        </p>
       </MotionDiv>
     </main>
   );
