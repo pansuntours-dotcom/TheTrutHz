@@ -1,12 +1,13 @@
-// src/components/MotionDiv.tsx
-"use client"; // Important! This makes it a client-side component
+"use client";
 
-import { motion, HTMLMotionProps } from "framer-motion";
-import React from "react";
+import * as React from "react";
+import { motion, MotionProps } from "framer-motion";
 
-// Type the props so it accepts all motion.div props + className, children, etc.
-type MotionDivProps = HTMLMotionProps<"div">;
+// ✅ This ensures MotionDiv accepts all normal <div> props like className
+type MotionDivProps = React.HTMLAttributes<HTMLDivElement> & MotionProps;
 
-const MotionDiv: React.FC<MotionDivProps> = (props) => <motion.div {...props} />;
+const MotionDiv: React.FC<MotionDivProps> = ({ children, ...rest }) => {
+  return <motion.div {...rest}>{children}</motion.div>;
+};
 
 export default MotionDiv;
