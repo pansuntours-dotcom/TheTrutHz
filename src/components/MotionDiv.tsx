@@ -1,13 +1,11 @@
 "use client";
 
-import { motion, HTMLMotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 import React from "react";
 
-// This allows passing normal HTML props (like className) safely
-type MotionDivProps = HTMLMotionProps<"div"> & {
-  children?: React.ReactNode;
-};
+// ✅ Correctly extend motion.div props so className and others work
+type MotionDivProps = React.ComponentProps<typeof motion.div>;
 
-export default function MotionDiv({ children, ...rest }: MotionDivProps) {
-  return <motion.div {...rest}>{children}</motion.div>;
+export default function MotionDiv(props: MotionDivProps) {
+  return <motion.div {...props} />;
 }
