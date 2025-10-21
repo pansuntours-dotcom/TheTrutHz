@@ -1,16 +1,23 @@
+// src/components/layouts/Footer.tsx
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
-const Footer: React.FC = () => {
+const MotionDiv = motion.div;
+const MotionFooter = motion.footer;
+
+export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-10 mt-20 border-t border-gray-800">
-      <div className="container mx-auto px-6">
-        {/* Logo + Description */}
-        <motion.div
-          {...({} as React.HTMLAttributes<HTMLDivElement>)} // ✅ Fix TypeScript
-          initial={{ opacity: 0, y: 20 }}
+    <MotionFooter
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="border-t border-gray-700 bg-gray-900 text-gray-300 py-10 mt-20"
+    >
+      <div className="container mx-auto px-6 md:px-12 lg:px-20">
+        <MotionDiv
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="flex items-center space-x-3 mb-6"
@@ -18,64 +25,43 @@ const Footer: React.FC = () => {
           <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-lg">T</span>
           </div>
-          <span className="text-lg font-semibold text-white">The TrutHz</span>
-        </motion.div>
+          <h2 className="text-xl font-bold text-white">The TrutHz</h2>
+        </MotionDiv>
 
-        {/* Footer Links */}
-        <motion.div
-          {...({} as React.HTMLAttributes<HTMLDivElement>)} // ✅ Fix TypeScript
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Column 1 */}
           <div>
-            <h4 className="text-white font-semibold mb-3">Platform</h4>
-            <ul className="space-y-2">
-              <li><a href="/about" className="hover:text-white">About</a></li>
-              <li><a href="/features" className="hover:text-white">Features</a></li>
-              <li><a href="/pricing" className="hover:text-white">Pricing</a></li>
-            </ul>
+            <h3 className="font-semibold text-white mb-3">About</h3>
+            <p className="text-sm text-gray-400">
+              The TrutHz is a next-gen platform for authentic conversations and meaningful connections.
+            </p>
           </div>
-          <div>
-            <h4 className="text-white font-semibold mb-3">Resources</h4>
-            <ul className="space-y-2">
-              <li><a href="/blog" className="hover:text-white">Blog</a></li>
-              <li><a href="/docs" className="hover:text-white">Docs</a></li>
-              <li><a href="/help" className="hover:text-white">Help Center</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-3">Company</h4>
-            <ul className="space-y-2">
-              <li><a href="/terms" className="hover:text-white">Terms</a></li>
-              <li><a href="/privacy" className="hover:text-white">Privacy</a></li>
-              <li><a href="/contact" className="hover:text-white">Contact</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-white font-semibold mb-3">Social</h4>
-            <ul className="space-y-2">
-              <li><a href="#" className="hover:text-white">Twitter</a></li>
-              <li><a href="#" className="hover:text-white">Instagram</a></li>
-              <li><a href="#" className="hover:text-white">LinkedIn</a></li>
-            </ul>
-          </div>
-        </motion.div>
 
-        {/* Copyright */}
-        <motion.div
-          {...({} as React.HTMLAttributes<HTMLDivElement>)} // ✅ Fix TypeScript
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center text-sm text-gray-500 border-t border-gray-800 pt-6"
-        >
-          <p>© {new Date().getFullYear()} The TrutHz. All rights reserved.</p>
-        </motion.div>
+          {/* Column 2 */}
+          <div>
+            <h3 className="font-semibold text-white mb-3">Quick Links</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li><Link href="/about" className="hover:text-white">About Us</Link></li>
+              <li><Link href="/pricing" className="hover:text-white">Pricing</Link></li>
+              <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 3 */}
+          <div>
+            <h3 className="font-semibold text-white mb-3">Legal</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li><Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-white">Terms of Service</Link></li>
+              <li><Link href="/disclaimer" className="hover:text-white">Disclaimer</Link></li>
+            </ul>
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-gray-500 mt-10">
+          © {new Date().getFullYear()} The TrutHz. All rights reserved.
+        </p>
       </div>
-    </footer>
+    </MotionFooter>
   );
-};
-
-export default Footer;
+}
