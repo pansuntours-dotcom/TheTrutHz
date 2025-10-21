@@ -2,13 +2,10 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { HTMLMotionProps } from "framer-motion";
+import { ComponentPropsWithoutRef } from "react";
 
-// ✅ Explicitly type the motion.footer element
-const MotionFooter: React.FC<HTMLMotionProps<"footer">> = (props) => (
-  <motion.footer {...props} />
-);
-
+// ✅ This tells TypeScript it's a motion-enhanced <footer> with normal HTML props
+const MotionFooter = motion<ComponentPropsWithoutRef<"footer">>("footer");
 const MotionDiv = motion.div;
 
 export default function Footer() {
