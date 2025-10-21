@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MotionSection } from "@/components/MotionDiv";
+import { MotionSection } from "@/components/Motion";
 
 export default function ContactPage() {
   return (
@@ -13,9 +13,33 @@ export default function ContactPage() {
     >
       <h1 className="text-4xl font-bold mb-6 text-primary">Contact Us</h1>
       <p className="text-lg text-gray-400 max-w-2xl text-center mb-10">
-        We'd love to hear from you! Fill out the form below and we'll get back to you.
+        Have a question, partnership idea, or media inquiry? Reach out to The TrutHz
+        team and we’ll get back to you as soon as possible.
       </p>
-      {/* Place your Contact Form component here */}
+
+      <form className="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+        <input
+          type="text"
+          placeholder="Your Name"
+          className="w-full p-3 rounded bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <input
+          type="email"
+          placeholder="Your Email"
+          className="w-full p-3 rounded bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <textarea
+          placeholder="Your Message"
+          rows={4}
+          className="w-full p-3 rounded bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <button
+          type="submit"
+          className="w-full bg-primary text-white font-semibold py-3 rounded hover:bg-primary-dark transition"
+        >
+          Send Message
+        </button>
+      </form>
     </MotionSection>
   );
 }
