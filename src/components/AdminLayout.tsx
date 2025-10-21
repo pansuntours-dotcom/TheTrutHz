@@ -1,44 +1,48 @@
 // src/components/AdminLayout.tsx
 
-import { ReactNode } from "react";
-import { motion } from "framer-motion";
+import { ReactNode, useState } from "react";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-// Props for AdminLayout
 type AdminLayoutProps = {
-  children: ReactNode;      // Main content or sidebar content
-  sidebarOpen: boolean;     // True if sidebar is open
+  children: ReactNode;      // Main page content
 };
 
-// Framer Motion animation variants for sidebar
-const sidebarVariants = {
-  open: {
-    x: 0,                    // Sidebar slides in from left
-    transition: { type: "spring", stiffness: 300 },
-  },
-  closed: {
-    x: -300,                 // Sidebar slides out to left
-    transition: { type: "spring", stiffness: 300 },
-  },
-};
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  // State to control sidebar open/close
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-export default function AdminLayout({ children, sidebarOpen }: AdminLayoutProps) {
+  // Framer Motion variants for sidebar animation
+  const sidebarVariants = {
+    open: { x: 0, transition: { type: "spring", stiffness: 300 } },
+    closed: { x: -300, transition: { type: "spring", stiffness: 300 } },
+  };
+
   return (
     <div className="flex">
-      
       {/* ===================== SIDEBAR ===================== */}
       <motion.nav
         className="bg-gray-900 text-gray-100 w-64 p-6 fixed h-full z-20"
-        animate={sidebarOpen ? "open" : "closed"}  // Control open/closed state
-        variants={sidebarVariants}                  // Apply motion variants
+        animate={sidebarOpen ? "open" : "closed"}
+        variants={sidebarVariants}
+        {...({} as HTMLMotionProps<HTMLElement>)} // Fixes TypeScript error
       >
-        {/* Sidebar content goes here */}
-        {children}
+        {/* Sidebar content */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="mb-4 px-4 py-2 bg-gray-700 rounded"
+        >
+          Toggle Sidebar
+        </button>
+        <ul>
+          <li className="py-2">Dashboard</li>
+          <li className="py-2">Settings</li>
+          <li className="py-2">Profile</li>
+        </ul>
       </motion.nav>
-      
+
       {/* ===================== MAIN CONTENT ===================== */}
       <div className="flex-1 ml-64 p-6">
-        {/* Your main page content goes here */}
-        {/* Example: <Dashboard /> or <AdminPanel /> */}
+        {children}
       </div>
     </div>
   );
