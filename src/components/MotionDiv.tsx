@@ -3,7 +3,7 @@
 import { motion, HTMLMotionProps } from "framer-motion";
 import React from "react";
 
-// ✅ Fully typed motion wrappers to allow className and other HTML props
+// ✅ Fully typed motion wrappers for HTML elements
 export const MotionDiv: React.FC<HTMLMotionProps<"div">> = (props) => (
   <motion.div {...props} />
 );
@@ -14,4 +14,8 @@ export const MotionSection: React.FC<HTMLMotionProps<"section">> = (props) => (
 
 export const MotionMain: React.FC<HTMLMotionProps<"main">> = (props) => (
   <motion.main {...props} />
+);
+
+export const MotionNav: React.FC<HTMLMotionProps<"nav">> = (props) => (
+  <motion.nav {...props} />
 );
