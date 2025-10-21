@@ -1,62 +1,44 @@
-"use client";
+// src/components/AdminLayout.tsx
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
-interface AdminLayoutProps {
-  children: React.ReactNode;
-}
+// Props for AdminLayout
+type AdminLayoutProps = {
+  children: ReactNode;      // Main content or sidebar content
+  sidebarOpen: boolean;     // True if sidebar is open
+};
 
+// Framer Motion animation variants for sidebar
 const sidebarVariants = {
-  open: { x: 0, transition: { type: "spring", stiffness: 300 } },
-  closed: { x: -250, transition: { type: "spring", stiffness: 300 } },
+  open: {
+    x: 0,                    // Sidebar slides in from left
+    transition: { type: "spring", stiffness: 300 },
+  },
+  closed: {
+    x: -300,                 // Sidebar slides out to left
+    transition: { type: "spring", stiffness: 300 },
+  },
 };
 
-const contentVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
-
-export default function AdminLayout({ children }: AdminLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
+export default function AdminLayout({ children, sidebarOpen }: AdminLayoutProps) {
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-800">
-      {/* Sidebar */}
+    <div className="flex">
+      
+      {/* ===================== SIDEBAR ===================== */}
       <motion.nav
         className="bg-gray-900 text-gray-100 w-64 p-6 fixed h-full z-20"
-        animate={sidebarOpen ? "open" : "closed"}
-        variants={sidebarVariants}
+        animate={sidebarOpen ? "open" : "closed"}  // Control open/closed state
+        variants={sidebarVariants}                  // Apply motion variants
       >
-        <h2 className="text-xl font-bold mb-8">Admin Menu</h2>
-        <ul className="space-y-4">
-          {["Dashboard", "Users", "Posts", "Settings"].map((item, i) => (
-            <li key={i} className="hover:text-[#00c6ff] transition cursor-pointer">
-              {item}
-            </li>
-          ))}
-        </ul>
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="mt-12 px-4 py-2 bg-indigo-600 rounded-lg hover:bg-indigo-700 transition"
-        >
-          {sidebarOpen ? "Collapse" : "Expand"}
-        </button>
+        {/* Sidebar content goes here */}
+        {children}
       </motion.nav>
-
-      {/* Main content */}
-      <div className={`flex-1 ml-64 p-8`}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={Math.random()} // change this key per route
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={contentVariants}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+      
+      {/* ===================== MAIN CONTENT ===================== */}
+      <div className="flex-1 ml-64 p-6">
+        {/* Your main page content goes here */}
+        {/* Example: <Dashboard /> or <AdminPanel /> */}
       </div>
     </div>
   );
