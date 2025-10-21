@@ -1,12 +1,15 @@
-// src/components/layouts/Footer.tsx
 "use client";
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { HTMLMotionProps } from "framer-motion";
 
-// ✅ Define motion components as specific HTML tags with proper typing
+// ✅ Explicitly type the motion.footer element
+const MotionFooter: React.FC<HTMLMotionProps<"footer">> = (props) => (
+  <motion.footer {...props} />
+);
+
 const MotionDiv = motion.div;
-const MotionFooter = motion('footer');
 
 export default function Footer() {
   return (
