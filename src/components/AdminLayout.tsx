@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MotionNav, MotionMain } from "@/components/Motion";
+import { MotionNav, MotionMain } from "../../components/Motion";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
