@@ -1,21 +1,12 @@
 "use client";
 
 import { motion, HTMLMotionProps } from "framer-motion";
-import React from "react";
+import { FC } from "react";
 
-// ✅ Fully typed motion wrappers for HTML elements
-export const MotionDiv: React.FC<HTMLMotionProps<"div">> = (props) => (
-  <motion.div {...props} />
-);
-
-export const MotionSection: React.FC<HTMLMotionProps<"section">> = (props) => (
-  <motion.section {...props} />
-);
-
-export const MotionMain: React.FC<HTMLMotionProps<"main">> = (props) => (
-  <motion.main {...props} />
-);
-
-export const MotionNav: React.FC<HTMLMotionProps<"nav">> = (props) => (
-  <motion.nav {...props} />
-);
+// Generic typed motion components
+export const MotionDiv: FC<HTMLMotionProps<"div">> = motion.div;
+export const MotionSection: FC<HTMLMotionProps<"section">> = motion.section;
+export const MotionNav: FC<HTMLMotionProps<"nav">> = motion.nav;
+export const MotionHeader: FC<HTMLMotionProps<"header">> = motion.header;
+export const MotionFooter: FC<HTMLMotionProps<"footer">> = motion.footer;
+export const MotionMain: FC<HTMLMotionProps<"main">> = motion.main;
