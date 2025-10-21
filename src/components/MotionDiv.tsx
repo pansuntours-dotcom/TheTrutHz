@@ -1,12 +1,8 @@
 "use client";
 
-import { motion, HTMLMotionProps } from "framer-motion";
-import React from "react";
+import { motion } from "framer-motion";
 
-type MotionDivProps = HTMLMotionProps<"div"> & {
-  children?: React.ReactNode;
-};
-
-export const MotionDiv: React.FC<MotionDivProps> = (props) => {
-  return <motion.div {...props} />;
-};
+// ✅ Correct generic typing to include HTMLDivElement props like className
+export const MotionDiv = motion.div;
+export const MotionSection = motion.section;
+export const MotionMain = motion.main;
