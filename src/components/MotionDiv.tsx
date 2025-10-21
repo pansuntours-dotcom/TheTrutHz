@@ -1,12 +1,19 @@
 "use client";
 
 import { motion, HTMLMotionProps } from "framer-motion";
-import { FC } from "react";
+import { forwardRef } from "react";
 
-// Generic typed motion components
-export const MotionDiv: FC<HTMLMotionProps<"div">> = motion.div;
-export const MotionSection: FC<HTMLMotionProps<"section">> = motion.section;
-export const MotionNav: FC<HTMLMotionProps<"nav">> = motion.nav;
-export const MotionHeader: FC<HTMLMotionProps<"header">> = motion.header;
-export const MotionFooter: FC<HTMLMotionProps<"footer">> = motion.footer;
-export const MotionMain: FC<HTMLMotionProps<"main">> = motion.main;
+// Div wrapper
+export const MotionDiv = forwardRef<HTMLDivElement, HTMLMotionProps<"div">>(
+  (props, ref) => <motion.div ref={ref} {...props} />
+);
+
+// Section wrapper
+export const MotionSection = forwardRef<HTMLElement, HTMLMotionProps<"section">>(
+  (props, ref) => <motion.section ref={ref} {...props} />
+);
+
+// Nav wrapper (for Admin sidebar)
+export const MotionNav = forwardRef<HTMLElement, HTMLMotionProps<"nav">>(
+  (props, ref) => <motion.nav ref={ref} {...props} />
+);
