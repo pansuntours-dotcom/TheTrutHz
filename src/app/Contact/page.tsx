@@ -15,7 +15,7 @@ export default function ContactPage() {
       <p className="text-lg text-gray-400 max-w-2xl text-center mb-10">
         We'd love to hear from you! Fill out the form below and we'll get back to you.
       </p>
-      {/* Contact form component here */}
+      {/* Place your Contact Form component here */}
     </MotionSection>
   );
 }
