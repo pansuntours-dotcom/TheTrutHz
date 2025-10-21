@@ -12,7 +12,8 @@ export default function AboutPage() {
     >
       <h1 className="text-4xl font-bold mb-6 text-primary">About Us</h1>
       <p className="text-lg text-gray-400 max-w-2xl text-center">
-        We build The TrutHz to give you the best experience possible.
+        At The TrutHz, we build innovative tools and experiences to bring
+        clarity, connection, and truth to our users.
       </p>
     </MotionSection>
   );
