@@ -1,38 +1,32 @@
-// src/components/AdminLayout.tsx
+"use client";
 
-import { ReactNode, useState } from "react";
+import React from "react";
+import { MotionNav } from "@/components/MotionDiv";
 
-type AdminLayoutProps = {
-  children: ReactNode;
-};
+interface AdminLayoutProps {
+  sidebarOpen: boolean;
+  sidebarVariants: any; // Replace with your actual variants type
+  children: React.ReactNode;
+}
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
+export default function AdminLayout({
+  sidebarOpen,
+  sidebarVariants,
+  children,
+}: AdminLayoutProps) {
   return (
     <div className="flex">
       {/* ===================== SIDEBAR ===================== */}
-      {sidebarOpen && (
-        <div className="bg-gray-900 text-gray-100 w-64 p-6 fixed h-full z-20">
-          {/* Sidebar content */}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="mb-4 px-4 py-2 bg-gray-700 rounded"
-          >
-            Toggle Sidebar
-          </button>
-          <ul>
-            <li className="py-2">Dashboard</li>
-            <li className="py-2">Settings</li>
-            <li className="py-2">Profile</li>
-          </ul>
-        </div>
-      )}
+      <MotionNav
+        className="bg-gray-900 text-gray-100 w-64 p-6 fixed h-full z-20"
+        animate={sidebarOpen ? "open" : "closed"}
+        variants={sidebarVariants}
+      >
+        {/* Sidebar content */}
+      </MotionNav>
 
       {/* ===================== MAIN CONTENT ===================== */}
-      <div className={`flex-1 p-6 ${sidebarOpen ? "ml-64" : ""}`}>
-        {children}
-      </div>
+      <main className="flex-1 ml-64 p-6">{children}</main>
     </div>
   );
 }
