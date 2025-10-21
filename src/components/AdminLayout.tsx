@@ -4,29 +4,25 @@ import React from "react";
 import { MotionNav } from "@/components/MotionDiv";
 
 interface AdminLayoutProps {
-  sidebarOpen: boolean;
-  sidebarVariants: any; // Replace with your actual variants type
   children: React.ReactNode;
+  sidebarOpen: boolean;
+  sidebarVariants: any;
 }
 
-export default function AdminLayout({
-  sidebarOpen,
-  sidebarVariants,
-  children,
-}: AdminLayoutProps) {
+export default function AdminLayout({ children, sidebarOpen, sidebarVariants }: AdminLayoutProps) {
   return (
     <div className="flex">
-      {/* ===================== SIDEBAR ===================== */}
+      {/* Sidebar */}
       <MotionNav
         className="bg-gray-900 text-gray-100 w-64 p-6 fixed h-full z-20"
         animate={sidebarOpen ? "open" : "closed"}
         variants={sidebarVariants}
       >
-        {/* Sidebar content */}
+        {/* Sidebar content goes here */}
       </MotionNav>
 
-      {/* ===================== MAIN CONTENT ===================== */}
-      <main className="flex-1 ml-64 p-6">{children}</main>
+      {/* Main content */}
+      <main className="flex-1 ml-64">{children}</main>
     </div>
   );
 }
