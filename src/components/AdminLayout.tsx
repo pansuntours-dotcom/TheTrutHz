@@ -1,28 +1,32 @@
 "use client";
 
 import React from "react";
-import { MotionNav } from "@/components/MotionDiv";
+import { MotionNav, MotionMain } from "@/components/Motion";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  sidebarOpen: boolean;
-  sidebarVariants: any;
 }
 
-export default function AdminLayout({ children, sidebarOpen, sidebarVariants }: AdminLayoutProps) {
+export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
-    <div className="flex">
-      {/* Sidebar */}
+    <div className="min-h-screen flex flex-col bg-gray-900 text-gray-100">
       <MotionNav
-        className="bg-gray-900 text-gray-100 w-64 p-6 fixed h-full z-20"
-        animate={sidebarOpen ? "open" : "closed"}
-        variants={sidebarVariants}
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 100 }}
+        className="bg-gray-800 p-4 shadow-lg"
       >
-        {/* Sidebar content goes here */}
+        <h1 className="text-2xl font-bold text-primary">Admin Panel</h1>
       </MotionNav>
 
-      {/* Main content */}
-      <main className="flex-1 ml-64">{children}</main>
+      <MotionMain
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="flex-1 p-6"
+      >
+        {children}
+      </MotionMain>
     </div>
   );
 }
