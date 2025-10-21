@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MotionSection } from "@/components/Motion";
+import { MotionSection } from "../../components/Motion";
 
 export default function ContactPage() {
   return (
