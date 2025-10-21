@@ -1,8 +1,17 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
+import React from "react";
 
-// ✅ Correct generic typing to include HTMLDivElement props like className
-export const MotionDiv = motion.div;
-export const MotionSection = motion.section;
-export const MotionMain = motion.main;
+// ✅ Fully typed motion wrappers to allow className and other HTML props
+export const MotionDiv: React.FC<HTMLMotionProps<"div">> = (props) => (
+  <motion.div {...props} />
+);
+
+export const MotionSection: React.FC<HTMLMotionProps<"section">> = (props) => (
+  <motion.section {...props} />
+);
+
+export const MotionMain: React.FC<HTMLMotionProps<"main">> = (props) => (
+  <motion.main {...props} />
+);
