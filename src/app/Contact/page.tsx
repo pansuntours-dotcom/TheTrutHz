@@ -5,59 +5,35 @@ import { MotionSection } from "@/components/MotionDiv";
 export default function ContactPage() {
   return (
     <MotionSection
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
       className="min-h-screen flex flex-col justify-center items-center bg-gray-900 text-gray-100 px-6"
     >
       <h1 className="text-4xl font-bold mb-6 text-primary">Contact Us</h1>
-
       <p className="text-lg text-gray-400 max-w-2xl text-center mb-10">
-        Have questions, suggestions, or collaboration ideas? We’d love to hear
-        from you. Fill out the form below or reach out through our social
-        platforms.
+        Have questions or need assistance? Fill out the form below or reach out
+        via email. We’ll get back to you as soon as possible.
       </p>
 
-      <form className="w-full max-w-lg bg-gray-800 p-8 rounded-lg shadow-lg">
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium mb-2">
-            Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            required
-            className="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-primary"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium mb-2">
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            className="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-primary"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label htmlFor="message" className="block text-sm font-medium mb-2">
-            Message
-          </label>
-          <textarea
-            id="message"
-            required
-            rows={4}
-            className="w-full px-4 py-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-primary"
-          />
-        </div>
-
+      <form className="w-full max-w-lg flex flex-col gap-4">
+        <input
+          type="text"
+          placeholder="Your Name"
+          className="p-3 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <input
+          type="email"
+          placeholder="Your Email"
+          className="p-3 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
+        <textarea
+          placeholder="Your Message"
+          className="p-3 rounded bg-gray-800 text-gray-100 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+        />
         <button
           type="submit"
-          className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-2 rounded transition"
+          className="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-6 rounded transition"
         >
           Send Message
         </button>
