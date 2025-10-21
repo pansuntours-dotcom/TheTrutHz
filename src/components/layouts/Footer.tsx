@@ -4,8 +4,9 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 
+// ✅ Define motion components as specific HTML tags with proper typing
 const MotionDiv = motion.div;
-const MotionFooter = motion.footer;
+const MotionFooter = motion('footer');
 
 export default function Footer() {
   return (
