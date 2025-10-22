@@ -1,18 +1,18 @@
 "use client";
 
 import React from "react";
-import { MotionSection } from "../MotionDiv";
+import MotionDiv from "@/components/Motion";
 
 export default function Footer() {
   return (
-    <MotionSection
+    <MotionDiv
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       className="border-t border-gray-700 bg-gray-900 text-gray-300 py-10 mt-20"
     >
       <div className="container mx-auto px-6 md:px-12 lg:px-20">
-        <MotionSection
+        <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -21,13 +21,13 @@ export default function Footer() {
           <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-lg">T</span>
           </div>
-          <span className="text-gray-300 font-semibold text-lg">The TrutHz</span>
-        </MotionSection>
+          <span className="text-xl font-bold">The TrutHz</span>
+        </MotionDiv>
 
         <p className="text-gray-400 text-sm">
-          &copy; {new Date().getFullYear()} The TrutHz. All rights reserved.
+          © {new Date().getFullYear()} The TrutHz. All rights reserved.
         </p>
       </div>
-    </MotionSection>
+    </MotionDiv>
   );
 }
