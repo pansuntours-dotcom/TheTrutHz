@@ -5,18 +5,17 @@ import MotionDiv from "@/components/Motion";
 
 export default function LegalPage() {
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900 px-6 sm:px-12 lg:px-24 py-20">
-      <MotionDiv
-        className="text-center mb-16"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <h1 className="text-5xl font-bold mb-4">Legal & Disclaimers</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Understand your rights and responsibilities when using The TrutHz.
-        </p>
-      </MotionDiv>
-    </main>
+    <MotionDiv
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="min-h-screen flex flex-col justify-center items-center bg-gray-900 text-gray-100 px-6"
+    >
+      <h1 className="text-4xl font-bold mb-6 text-primary">Legal</h1>
+      <p className="text-lg text-gray-400 max-w-2xl text-center mb-10">
+        All legal information, disclaimers, and privacy policies.
+      </p>
+      {/* Legal content here */}
+    </MotionDiv>
   );
 }
