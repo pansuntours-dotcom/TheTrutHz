@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import MotionDiv from "@/components/MotionDiv";
+import MotionDiv from "@/components/Motion";
 
 export default function LegalPage() {
   return (
