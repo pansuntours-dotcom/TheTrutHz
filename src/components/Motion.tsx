@@ -2,9 +2,8 @@
 
 import { motion } from "framer-motion";
 
-// Define the motion div wrapper
+// ✅ Export both default and named version
 const MotionDiv = motion.div;
 
-// ✅ Support both default and named exports
 export default MotionDiv;
 export { MotionDiv };
