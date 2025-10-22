@@ -1,7 +1,7 @@
 "use client";
 
-import { ReactNode } from "react";
-import { MotionDiv } from "./Motion";
+import React, { ReactNode } from "react";
+import MotionDiv from "@/components/Motion";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -10,18 +10,16 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <MotionDiv
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen flex flex-col bg-gray-900 text-gray-100"
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ type: "spring", stiffness: 100 }}
+      className="min-h-screen bg-gray-900 text-gray-100"
     >
-      <header className="p-4 bg-gray-800 text-center text-lg font-semibold">
-        Admin Dashboard
+      <header className="p-6 bg-gray-800 border-b border-gray-700">
+        <h1 className="text-2xl font-bold">Admin Panel</h1>
       </header>
-      <main className="flex-1 p-6">{children}</main>
-      <footer className="p-4 text-center text-sm text-gray-500">
-        &copy; {new Date().getFullYear()} The TrutHz
-      </footer>
+
+      <main className="container mx-auto p-6">{children}</main>
     </MotionDiv>
   );
 }
