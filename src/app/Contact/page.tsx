@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionDiv } from "@/components/Motion";
+ import MotionDiv from "@/components/Motion";
 
 export default function ContactPage() {
   return (
