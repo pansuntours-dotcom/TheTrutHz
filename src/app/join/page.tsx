@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import MotionDiv from "@/components/MotionDiv";
+import MotionDiv from "@/components/Motion";
 
 export default function JoinPage() {
   return (
