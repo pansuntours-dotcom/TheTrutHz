@@ -7,12 +7,12 @@ export default function DashboardPage() {
   return (
     <MotionDiv
       initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="p-6 min-h-screen bg-gray-900 text-gray-100"
+      className="min-h-screen flex flex-col justify-center items-center bg-gray-900 text-gray-100 p-6"
     >
-      <h1 className="text-3xl font-bold mb-4 text-primary">Dashboard</h1>
-      <p className="text-gray-400">Welcome to your dashboard!</p>
+      <h1 className="text-4xl font-bold mb-6 text-primary">Dashboard</h1>
+      {/* Dashboard content goes here */}
     </MotionDiv>
   );
 }
