@@ -2,27 +2,21 @@
 import * as Tone from 'tone';
 
 export class AnalyzerEngine {
-  private analyzer: Tone.Analyser | null = null;
+  analyzer: Tone.Analyser;
 
   constructor() {
-    try {
-      this.analyzer = new Tone.Analyser('fft', 64);
-      // Attach to master - any Tone.Player / MediaElement routed to destination will be seen
-      Tone.getDestination().connect(this.analyzer);
-    } catch (err) {
-      console.warn('Tone Analyzer init failed', err);
-      this.analyzer = null;
-    }
+    this.analyzer = new Tone.Analyser('waveform', 1024);
   }
 
-  getFftArray(): Float32Array {
-    if (!this.analyzer) return new Float32Array(64).fill(0);
-    const val = this.analyzer.getValue() as number[] | Float32Array;
-    return Float32Array.from(val as any);
+  getWaveform() {
+    return this.analyzer.getValue();
   }
 
-  dispose() {
-    this.analyzer?.dispose();
-    this.analyzer = null;
+  connect(node: Tone.ToneAudioNode) {
+    node.connect(this.analyzer);
+  }
+
+  disconnect() {
+    this.analyzer.dispose();
   }
 }
