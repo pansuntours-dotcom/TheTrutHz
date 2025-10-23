@@ -1,7 +1,10 @@
 [build]
   command = "next build"
   publish = ".next"
-  environment = { NODE_VERSION = "22.21.0" }
+
+[build.environment]
+  NODE_VERSION = "22.21.0"
+  FFmpeg_Path = "/usr/bin/ffmpeg"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
