@@ -1,22 +1,8 @@
 // components/tone/AnalyzerEngine.ts
-import * as Tone from 'tone';
-
+// Temporary placeholder to prevent build failure.
+// Replace this later with your actual audio analysis engine.
 export class AnalyzerEngine {
-  analyzer: Tone.Analyser;
-
-  constructor() {
-    this.analyzer = new Tone.Analyser('waveform', 1024);
-  }
-
-  getWaveform() {
-    return this.analyzer.getValue();
-  }
-
-  connect(node: Tone.ToneAudioNode) {
-    node.connect(this.analyzer);
-  }
-
-  disconnect() {
-    this.analyzer.dispose();
-  }
+  constructor() {}
+  start() {}
+  stop() {}
 }
