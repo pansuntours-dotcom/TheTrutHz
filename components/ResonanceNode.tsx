@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useRef, useEffect, useMemo } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { VideoTexture } from 'three';
 import Hls from 'hls.js';
+
+// Import VideoTexture correctly for your version of three
+import VideoTexture from 'three/src/textures/VideoTexture.js';
 
 type Props = {
   data: {
@@ -31,7 +33,6 @@ export default function ResonanceNode({
     data.type === 'live' ||
     (data.type === 'video' && /m3u8/.test(data.asset_url));
 
-  // create video element for HLS if needed
   useEffect(() => {
     if (isLive && typeof window !== 'undefined') {
       const video = document.createElement('video');
