@@ -1,32 +1,32 @@
-// app/gallery/page.tsx
 'use client';
-import React, { useState, useEffect } from 'react';
-import useSWR from 'swr';
-import dynamic from 'next/dynamic';
-import GalleryHeader from '../../components/GalleryHeader';
-import MediaPortal from '../../components/MediaPortal';
-import MobileGridFallback from '../../components/MobileGridFallback';
 
-const ResonanceCanvas = dynamic(() => import('../../components/ResonanceCanvas'), { ssr: false });
+import { useState, useEffect } from 'react';
+import ResonanceCanvas from './ResonanceCanvas';
+import MobileGridFallback from './MobileGridFallback';
+import MediaPortal from './MediaPortal';
 
-const fetcher = (url: string) => fetch(url).then(r => r.json());
+interface GalleryItem {
+  id: string;
+  title: string;
+  imageUrl: string;
+}
 
 export default function GalleryPage() {
-  const { data } = useSWR('/api/gallery', fetcher, { refreshInterval: 5000 });
-  const items = data?.items || [];
-  const [active, setActive] = useState<any | null>(null);
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [active, setActive] = useState<GalleryItem | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
-    const onResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    // Example: Replace this with your data fetch
+    setItems([
+      { id: '1', title: 'Sample 1', imageUrl: '/sample1.jpg' },
+      { id: '2', title: 'Sample 2', imageUrl: '/sample2.jpg' },
+    ]);
   }, []);
 
   return (
-    <div className="w-full h-screen bg-[#020316] text-white">
-      <GalleryHeader />
+    <div>
       {isMobile ? (
         <MobileGridFallback items={items} onActivate={setActive} />
       ) : (
