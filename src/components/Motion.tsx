@@ -2,8 +2,11 @@
 
 import { motion } from "framer-motion";
 
-// ✅ Export both default and named version
-const MotionDiv = motion.div;
+// These exports let you use animated HTML elements anywhere in your app.
+export const MotionDiv = motion.div;
+export const MotionSpan = motion.span;
+export const MotionSection = motion.section;
+export const MotionImg = motion.img;
 
-export default MotionDiv;
-export { MotionDiv };
+// Default export in case you want to import motion directly
+export default motion;
