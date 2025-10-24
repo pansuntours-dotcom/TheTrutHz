@@ -1,94 +1,68 @@
 'use client';
 
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import Hls from 'hls.js';
 
-// Import VideoTexture correctly for your version of three
-import VideoTexture from 'three/src/textures/VideoTexture.js';
-
 type Props = {
   data: {
     id: string;
-    type: 'video' | 'live' | 'image' | string;
-    asset_url: string;
+    url: string;
+    position: [number, number, number];
   };
-  position?: [number, number, number];
-  scale?: [number, number, number];
-  onClick?: (data: any) => void;
 };
 
-export default function ResonanceNode({
-  data,
-  position = [0, 0, 0],
-  scale = [1, 1, 1],
-  onClick,
-}: Props) {
-  const ref = useRef<THREE.Mesh>(null);
-  const vidRef = useRef<HTMLVideoElement | null>(null);
-  const textureRef = useRef<VideoTexture | null>(null);
-
-  const isLive =
-    data.type === 'live' ||
-    (data.type === 'video' && /m3u8/.test(data.asset_url));
+export default function ResonanceNode({ data }: Props) {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const textureRef = useRef<THREE.VideoTexture | null>(null);
 
   useEffect(() => {
-    if (isLive && typeof window !== 'undefined') {
-      const video = document.createElement('video');
-      video.crossOrigin = 'anonymous';
-      video.muted = true;
-      video.loop = true;
-      video.playsInline = true;
+    const video = document.createElement('video');
+    video.crossOrigin = 'anonymous';
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
 
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(data.asset_url);
-        hls.attachMedia(video);
-      } else {
-        video.src = data.asset_url;
-      }
+    const hls = new Hls();
 
-      video.play().catch((err) => console.warn('Video play failed:', err));
-      vidRef.current = video;
-
-      const tex = new VideoTexture(video);
-      tex.minFilter = THREE.LinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      tex.format = THREE.RGBFormat;
-      textureRef.current = tex;
+    if (Hls.isSupported()) {
+      hls.loadSource(data.url);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = data.url;
+      video.addEventListener('loadedmetadata', () => video.play());
     }
+
+    // ✅ Use THREE.VideoTexture (no separate import)
+    const texture = new THREE.VideoTexture(video);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBFormat;
+
+    textureRef.current = texture;
+    videoRef.current = video;
 
     return () => {
-      if (vidRef.current) {
-        vidRef.current.pause();
-        vidRef.current.src = '';
-      }
+      hls.destroy();
+      video.pause();
+      video.src = '';
+      texture.dispose();
     };
-  }, [data.asset_url, isLive]);
-
-  const material = useMemo(() => {
-    if (isLive && textureRef.current) {
-      return new THREE.MeshBasicMaterial({ map: textureRef.current });
-    }
-    return new THREE.MeshStandardMaterial({ color: 0x00ffff });
-  }, [isLive]);
+  }, [data.url]);
 
   useFrame(() => {
-    if (ref.current) {
-      ref.current.rotation.y += 0.005;
+    if (meshRef.current && textureRef.current) {
+      meshRef.current.rotation.y += 0.002;
     }
   });
 
   return (
-    <mesh
-      ref={ref}
-      position={position}
-      scale={scale}
-      material={material}
-      onClick={() => onClick?.(data)}
-    >
+    <mesh ref={meshRef} position={data.position}>
       <sphereGeometry args={[1, 32, 32]} />
+      <meshBasicMaterial map={textureRef.current || undefined} />
     </mesh>
   );
 }
