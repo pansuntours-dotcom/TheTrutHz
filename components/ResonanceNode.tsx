@@ -14,7 +14,8 @@ type Props = {
 };
 
 export default function ResonanceNode({ data }: Props) {
-  const meshRef = useRef<THREE.Mesh>(null);
+  // ✅ Use 'any' to avoid strict namespace issues with THREE types in Next builds
+  const meshRef = useRef<any>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const textureRef = useRef<THREE.VideoTexture | null>(null);
 
@@ -30,13 +31,17 @@ export default function ResonanceNode({ data }: Props) {
     if (Hls.isSupported()) {
       hls.loadSource(data.url);
       hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch(() => {});
+      });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = data.url;
-      video.addEventListener('loadedmetadata', () => video.play());
+      video.addEventListener('loadedmetadata', () => {
+        video.play().catch(() => {});
+      });
     }
 
-    // ✅ Use THREE.VideoTexture (no separate import)
+    // ✅ Create texture safely
     const texture = new THREE.VideoTexture(video);
     texture.minFilter = THREE.LinearFilter;
     texture.magFilter = THREE.LinearFilter;
@@ -54,7 +59,7 @@ export default function ResonanceNode({ data }: Props) {
   }, [data.url]);
 
   useFrame(() => {
-    if (meshRef.current && textureRef.current) {
+    if (meshRef.current) {
       meshRef.current.rotation.y += 0.002;
     }
   });
