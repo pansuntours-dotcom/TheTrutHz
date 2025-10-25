@@ -1,9 +1,13 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+// Import fiber to register JSX types for <mesh>, etc.
+import { Canvas, useFrame, extend } from '@react-three/fiber';
 import * as THREE from 'three';
 import Hls from 'hls.js';
+
+// 👇 Extend Three.js elements so JSX recognizes them
+extend(THREE);
 
 type Props = {
   data: {
@@ -40,10 +44,9 @@ export default function ResonanceNode({ data }: Props) {
       });
     }
 
-    // ✅ Safely create texture without relying on missing type exports
     const texture: any = new (THREE as any).VideoTexture(video);
-    const LinearFilter = (THREE as any).LinearFilter || 1006; // fallback constant
-    const RGBFormat = (THREE as any).RGBFormat || 1022; // fallback constant
+    const LinearFilter = (THREE as any).LinearFilter || 1006;
+    const RGBFormat = (THREE as any).RGBFormat || 1022;
 
     texture.minFilter = LinearFilter;
     texture.magFilter = LinearFilter;
@@ -66,6 +69,7 @@ export default function ResonanceNode({ data }: Props) {
     }
   });
 
+  // ✅ JSX types now registered
   return (
     <mesh ref={meshRef} position={data.position}>
       <sphereGeometry args={[1, 32, 32]} />
