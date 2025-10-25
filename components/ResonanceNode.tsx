@@ -4,7 +4,7 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// Allow JSX elements like <mesh>, <sphereGeometry>, etc. to compile safely
+// Fix TypeScript JSX recognition for Three.js elements
 declare global {
   namespace JSX {
     interface IntrinsicElements {
@@ -25,13 +25,12 @@ interface ResonanceNodeProps {
 }
 
 /**
- * ResonanceNode — a simple animated 3D sphere node for The TrutHz visual layer.
- * React Three Fiber handles the scene, camera, and animation loop.
+ * ResonanceNode — a dynamic, glowing 3D node that rotates in space.
  */
 export default function ResonanceNode({ data }: ResonanceNodeProps) {
-  const meshRef = useRef<THREE.Mesh>(null!);
+  const meshRef = useRef<InstanceType<typeof THREE.Mesh>>(null);
 
-  // Continuous animation frame handler
+  // Rotate the node continuously for resonance animation
   useFrame(() => {
     if (meshRef.current) {
       meshRef.current.rotation.y += data.rotationSpeed ?? 0.01;
