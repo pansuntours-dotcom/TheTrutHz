@@ -3,45 +3,44 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-// ✅ Define MotionDiv properly
-const MotionDiv = motion.div;
-
 export default function ContactPage() {
   return (
-    <MotionDiv
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="flex flex-col items-center justify-center min-h-screen p-8 bg-black text-white"
+      viewport={{ once: true }}
+      className="min-h-screen flex flex-col items-center justify-center bg-gray-950 text-white p-8"
     >
-      <h1 className="text-4xl font-bold mb-4">Contact The TrutHz</h1>
-      <p className="text-lg text-gray-400 max-w-xl text-center mb-8">
-        Reach out for collaborations, inquiries, or resonance partnerships.
+      <h1 className="text-4xl font-bold mb-6">Contact Us</h1>
+      <p className="text-lg max-w-xl text-center">
+        Have a question or feedback about The TrutHz?  
+        Reach out anytime and we’ll get back to you soon.
       </p>
 
-      <form className="w-full max-w-md space-y-4">
+      <form className="mt-8 flex flex-col w-full max-w-md space-y-4">
         <input
           type="text"
           placeholder="Your Name"
-          className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:border-cyan-400 outline-none"
+          className="p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <input
           type="email"
           placeholder="Your Email"
-          className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:border-cyan-400 outline-none"
+          className="p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <textarea
           placeholder="Your Message"
           rows={5}
-          className="w-full p-3 rounded bg-gray-800 text-white border border-gray-700 focus:border-cyan-400 outline-none"
+          className="p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <button
           type="submit"
-          className="w-full p-3 rounded bg-cyan-500 hover:bg-cyan-400 text-black font-semibold transition"
+          className="py-3 bg-indigo-600 rounded font-semibold hover:bg-indigo-700 transition-colors"
         >
           Send Message
         </button>
       </form>
-    </MotionDiv>
+    </motion.div>
   );
 }
