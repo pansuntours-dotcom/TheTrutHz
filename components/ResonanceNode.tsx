@@ -1,79 +1,60 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-// Only import what exists in all versions:
+import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import Hls from 'hls.js';
 
-type Props = {
-  data: {
-    id: string;
-    url: string;
-    position: [number, number, number];
-  };
-};
-
-export default function ResonanceNode({ data }: Props) {
-  const meshRef = useRef<any>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const textureRef = useRef<any>(null);
-
-  useEffect(() => {
-    const video = document.createElement('video');
-    video.crossOrigin = 'anonymous';
-    video.loop = true;
-    video.muted = true;
-    video.playsInline = true;
-
-    const hls = new Hls();
-
-    if (Hls.isSupported()) {
-      hls.loadSource(data.url);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(() => {});
-      });
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = data.url;
-      video.addEventListener('loadedmetadata', () => {
-        video.play().catch(() => {});
-      });
+// Allow JSX elements like <mesh>, <sphereGeometry>, etc. to compile safely
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      mesh: any;
+      sphereGeometry: any;
+      meshStandardMaterial: any;
     }
+  }
+}
 
-    // Create video texture dynamically
-    const texture: any = new (THREE as any).VideoTexture(video);
-    const LinearFilter = (THREE as any).LinearFilter || 1006;
-    const RGBFormat = (THREE as any).RGBFormat || 1022;
+interface ResonanceNodeProps {
+  data: {
+    position: [number, number, number];
+    color?: string;
+    scale?: number;
+    rotationSpeed?: number;
+  };
+}
 
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
-    texture.format = RGBFormat;
+/**
+ * ResonanceNode — a simple animated 3D sphere node for The TrutHz visual layer.
+ * React Three Fiber handles the scene, camera, and animation loop.
+ */
+export default function ResonanceNode({ data }: ResonanceNodeProps) {
+  const meshRef = useRef<THREE.Mesh>(null!);
 
-    textureRef.current = texture;
-    videoRef.current = video;
-
-    return () => {
-      hls.destroy();
-      video.pause();
-      video.src = '';
-      texture.dispose();
-    };
-  }, [data.url]);
-
+  // Continuous animation frame handler
   useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.rotation.y += 0.002;
+      meshRef.current.rotation.y += data.rotationSpeed ?? 0.01;
+      meshRef.current.rotation.x += (data.rotationSpeed ?? 0.01) / 2;
     }
   });
 
-  // @ts-ignore – suppress JSX typing errors for <mesh>, <sphereGeometry>, etc.
   return (
-    <mesh ref={meshRef} position={data.position}>
-      {/* @ts-ignore */}
+    <mesh
+      ref={meshRef}
+      position={data.position}
+      scale={data.scale ?? 1}
+      castShadow
+      receiveShadow
+    >
       <sphereGeometry args={[1, 32, 32]} />
-      {/* @ts-ignore */}
-      <meshBasicMaterial map={textureRef.current || undefined} />
+      <meshStandardMaterial
+        color={data.color ?? '#00ffff'}
+        emissive={data.color ?? '#00ffff'}
+        emissiveIntensity={0.5}
+        roughness={0.4}
+        metalness={0.6}
+      />
     </mesh>
   );
 }
