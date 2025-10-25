@@ -16,7 +16,7 @@ type Props = {
 export default function ResonanceNode({ data }: Props) {
   const meshRef = useRef<any>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const textureRef = useRef<any>(null); // ✅ no more type conflicts
+  const textureRef = useRef<any>(null);
 
   useEffect(() => {
     const video = document.createElement('video');
@@ -40,24 +40,23 @@ export default function ResonanceNode({ data }: Props) {
       });
     }
 
-    // ✅ Create texture dynamically (no type import needed)
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const texture = new (THREE as any).VideoTexture(video);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.format = THREE.RGBFormat;
+    // ✅ Safely create texture without relying on missing type exports
+    const texture: any = new (THREE as any).VideoTexture(video);
+    const LinearFilter = (THREE as any).LinearFilter || 1006; // fallback constant
+    const RGBFormat = (THREE as any).RGBFormat || 1022; // fallback constant
+
+    texture.minFilter = LinearFilter;
+    texture.magFilter = LinearFilter;
+    texture.format = RGBFormat;
 
     textureRef.current = texture;
     videoRef.current = video;
 
     return () => {
-      try {
-        hls.destroy();
-      } catch {}
+      hls.destroy();
       video.pause();
       video.src = '';
-      if (texture.dispose) texture.dispose();
+      texture.dispose();
     };
   }, [data.url]);
 
