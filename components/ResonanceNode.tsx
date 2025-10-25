@@ -3,6 +3,7 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { Mesh } from 'three'; // ✅ Explicit import for modern type systems
 
 // Fix TypeScript JSX recognition for Three.js elements
 declare global {
@@ -28,7 +29,8 @@ interface ResonanceNodeProps {
  * ResonanceNode — a dynamic, glowing 3D node that rotates in space.
  */
 export default function ResonanceNode({ data }: ResonanceNodeProps) {
-  const meshRef = useRef<InstanceType<typeof THREE.Mesh>>(null);
+  // ✅ Use Mesh directly, not via THREE.*
+  const meshRef = useRef<Mesh>(null);
 
   // Rotate the node continuously for resonance animation
   useFrame(() => {
