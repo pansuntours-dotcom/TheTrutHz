@@ -1,52 +1,13 @@
-# ==============================================
-# Netlify Build Configuration for TheTrutHz
-# ==============================================
-
 [build]
   command = "npm run build"
-  publish = ".next"
-  base = ""
+  publish = "out"          # <-- note 'out' for static export if needed
   functions = "netlify/functions"
 
-# ==============================================
-# Environment Variables
-# ==============================================
 [build.environment]
   NODE_VERSION = "20"
   NEXT_TELEMETRY_DISABLED = "1"
-  # 👇 Add your Supabase keys here (can also set these in Netlify UI)
   NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co"
   NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"
 
-# ==============================================
-# Next.js Plugin
-# ==============================================
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# ==============================================
-# Optional: Lighthouse Performance Report
-# ==============================================
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
-  [plugins.inputs.settings]
-    output_path = "reports/lighthouse.html"
-
-# ==============================================
-# Redirects & Rewrites (if needed)
-# ==============================================
-# Example: Redirect all traffic to index.html for SPA behavior
-# [[redirects]]
-#   from = "/*"
-#   to = "/index.html"
-#   status = 200
-
-# ==============================================
-# Headers (Optional for API CORS)
-# ==============================================
-# [[headers]]
-#   for = "/*"
-#   [headers.values]
-#     Access-Control-Allow-Origin = "*"
-#     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-#     Access-Control-Allow-Headers = "Content-Type, Authorization"
