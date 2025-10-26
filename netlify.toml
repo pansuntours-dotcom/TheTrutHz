@@ -1,32 +1,52 @@
-# netlify.toml
-# =====================================================
-# Netlify build configuration for Next.js + Tailwind + Supabase
-# =====================================================
+# ==============================================
+# Netlify Build Configuration for TheTrutHz
+# ==============================================
 
 [build]
-  command = "npm run build"      # Run Next.js build script
-  publish = ".next"              # Directory to deploy
-  node_bundler = "esbuild"       # Use fast modern bundler
+  command = "npm run build"
+  publish = ".next"
+  base = ""
+  functions = "netlify/functions"
 
-# =====================================================
-# Environment variables
-# =====================================================
+# ==============================================
+# Environment Variables
+# ==============================================
 [build.environment]
-  NODE_VERSION = "18.20.3"       # Match local Node version
-  NPM_FLAGS = "--legacy-peer-deps"
+  NODE_VERSION = "20"
   NEXT_TELEMETRY_DISABLED = "1"
-  CI = "true"
+  # 👇 Add your Supabase keys here (can also set these in Netlify UI)
+  NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_PROJECT_ID.supabase.co"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"
 
-# =====================================================
-# Next.js plugin for Netlify
-# =====================================================
+# ==============================================
+# Next.js Plugin
+# ==============================================
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# =====================================================
-# Redirects (optional: uncomment if using custom routes)
-# =====================================================
+# ==============================================
+# Optional: Lighthouse Performance Report
+# ==============================================
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  [plugins.inputs.settings]
+    output_path = "reports/lighthouse.html"
+
+# ==============================================
+# Redirects & Rewrites (if needed)
+# ==============================================
+# Example: Redirect all traffic to index.html for SPA behavior
 # [[redirects]]
 #   from = "/*"
 #   to = "/index.html"
 #   status = 200
+
+# ==============================================
+# Headers (Optional for API CORS)
+# ==============================================
+# [[headers]]
+#   for = "/*"
+#   [headers.values]
+#     Access-Control-Allow-Origin = "*"
+#     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+#     Access-Control-Allow-Headers = "Content-Type, Authorization"
