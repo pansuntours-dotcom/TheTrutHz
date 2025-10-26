@@ -1,10 +1,32 @@
+# netlify.toml
+# =====================================================
+# Netlify build configuration for Next.js + Tailwind + Supabase
+# =====================================================
+
 [build]
-  command = "next build"
-  publish = ".next"
+  command = "npm run build"      # Run Next.js build script
+  publish = ".next"              # Directory to deploy
+  node_bundler = "esbuild"       # Use fast modern bundler
 
+# =====================================================
+# Environment variables
+# =====================================================
 [build.environment]
-  NODE_VERSION = "22.21.0"
-  FFmpeg_Path = "/usr/bin/ffmpeg"
+  NODE_VERSION = "18.20.3"       # Match local Node version
+  NPM_FLAGS = "--legacy-peer-deps"
+  NEXT_TELEMETRY_DISABLED = "1"
+  CI = "true"
 
+# =====================================================
+# Next.js plugin for Netlify
+# =====================================================
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# =====================================================
+# Redirects (optional: uncomment if using custom routes)
+# =====================================================
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
