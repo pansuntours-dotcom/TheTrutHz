@@ -1,26 +1,6 @@
-# netlify.toml
-
 [build]
-  # Use the Next.js build command
   command = "npm run build"
-  # Publish directory for Next.js dynamic build (do NOT use 'out')
   publish = ".next"
-  # Netlify Functions directory for API routes
-  functions = "netlify/functions"
 
-# Next.js plugin handles API routes, SSR, and dynamic pages
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Optional: environment variables for Supabase (add your real values in Netlify dashboard)
-[build.environment]
-  NEXT_PUBLIC_SUPABASE_URL = "https://your-supabase-url.supabase.co"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "your-anon-key"
-  SUPABASE_SERVICE_ROLE_KEY = "your-service-role-key"
-
-# Redirects for Netlify to handle all requests through Next.js
-# This ensures client-side routing works for dynamic pages
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/next"
-  status = 200
