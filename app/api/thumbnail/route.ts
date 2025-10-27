@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
 import { ImageResponse } from '@vercel/og';
 
-export const runtime = 'edge'; // ✅ Runs at the Edge instead of Node
+export const runtime = 'edge'; // ✅ Edge-compatible
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
   const title = searchParams.get('title') || 'The TrutHz';
   const subtitle = searchParams.get('subtitle') || 'Uncover. Understand. Unify.';
 
@@ -18,7 +17,7 @@ export async function GET(req: Request) {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'black',
+          backgroundColor: 'black',
           color: 'white',
           fontSize: 60,
           textAlign: 'center',
