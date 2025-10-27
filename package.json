@@ -1,30 +1,17 @@
 {
-  "name": "thetruthz",
+  "name": "truthz-gallery",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
     "next": "14.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "@supabase/supabase-js": "2.43.1",
-    "framer-motion": "11.5.6",
-    "clsx": "2.1.1",
-    "tailwind-merge": "2.3.0",
-    "sharp": "0.33.4",
-    "node-fetch": "3.3.2",
-    "fluent-ffmpeg": "2.1.2",
-    "ffmpeg-static": "5.2.0"
-  },
-  "devDependencies": {
-    "tailwindcss": "3.4.13",
-    "postcss": "8.4.47",
-    "autoprefixer": "10.4.20",
-    "typescript": "5.6.3"
+    "hls.js": "^1.4.0",
+    "@google/model-viewer": "^1.16.0"
   }
 }
