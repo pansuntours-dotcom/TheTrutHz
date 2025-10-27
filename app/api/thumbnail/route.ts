@@ -1,26 +1,37 @@
-// app/api/thumbnail/route.ts
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { ImageResponse } from '@vercel/og';
 
-export const runtime = "nodejs"; // ensure this runs only in Node.js (not edge)
-export const dynamic = "force-dynamic";
+export const runtime = 'edge'; // ✅ Runs at the Edge instead of Node
 
-export async function POST(req: Request) {
-  try {
-    // Dynamic import — avoids including ffmpeg in the client build
-    const ffmpeg = await import("fluent-ffmpeg");
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const title = searchParams.get('title') || 'The TrutHz';
+  const subtitle = searchParams.get('subtitle') || 'Uncover. Understand. Unify.';
 
-    // Parse body (example structure)
-    const { videoUrl } = await req.json();
-
-    // You can run ffmpeg operations here
-    const command = ffmpeg.default(videoUrl)
-      .on("start", (cmd) => console.log("FFmpeg started:", cmd))
-      .on("error", (err) => console.error("FFmpeg error:", err.message));
-
-    // Simulated response (replace with actual file processing)
-    return NextResponse.json({ success: true, message: "Thumbnail generated" });
-  } catch (error: any) {
-    console.error("Thumbnail API Error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-  }
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'black',
+          color: 'white',
+          fontSize: 60,
+          textAlign: 'center',
+          fontFamily: 'sans-serif',
+        }}
+      >
+        <strong>{title}</strong>
+        <p style={{ fontSize: 32, marginTop: 20 }}>{subtitle}</p>
+      </div>
+    ),
+    {
+      width: 1200,
+      height: 630,
+    }
+  );
 }
