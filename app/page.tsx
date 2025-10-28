@@ -1,9 +1,15 @@
 // app/page.tsx
+import Gallery from '../components/Gallery';
+import Dashboard from '../components/Dashboard';
+
 export default function HomePage() {
   return (
-    <main style={{ textAlign: "center", padding: "3rem" }}>
-      <h1>Welcome to The TrutHz</h1>
-      <p>Your voice. Your truth. Your frequency.</p>
-    </main>
+    <div className="app-wrap">
+      <div style={{ width: '100%' }}>
+        <Gallery />
+      </div>
+
+      <Dashboard />
+    </div>
   );
 }
