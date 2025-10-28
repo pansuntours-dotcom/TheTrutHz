@@ -1,31 +1,30 @@
-import { NextResponse } from 'next/server';
-import fetch from 'node-fetch';
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  let thumb = '';
-
   try {
     const body = await request.json();
-    const payload = body.payload || {};
 
-    // Replace with your actual API URL
-    const apiUrl = 'https://example.com/api/generate-thumbnail';
+    // Example webhook logging (optional)
+    console.log("🔔 Webhook received:", body);
 
-    const resp = await fetch(apiUrl, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+    // Example of using fetch (Node 18+ global)
+    const response = await fetch("https://api.example.com/process", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
     });
 
-    // Type assertion for unknown JSON
-    const j = (await resp.json()) as { thumbnail_url?: string };
-    thumb = j.thumbnail_url || thumb;
-  } catch (e) {
-    console.error('Webhook thumbnail fetch failed', e);
-    // fallback thumbnail remains empty string
-  }
+    const result = await response.json();
 
-  return NextResponse.json({ thumbnail: thumb });
+    return NextResponse.json(
+      { message: "Webhook processed successfully", result },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("❌ Webhook error:", error);
+    return NextResponse.json(
+      { error: "Failed to process webhook" },
+      { status: 500 }
+    );
+  }
 }
