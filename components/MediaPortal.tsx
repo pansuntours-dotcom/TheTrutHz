@@ -4,104 +4,99 @@ import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 
 interface MediaPortalProps {
-  src: string;               // Video or audio source URL
-  type?: 'video' | 'audio';  // Default: 'video'
-  poster?: string;           // Optional preview image
-  autoPlay?: boolean;        // Optional autoplay
-  muted?: boolean;           // Default true for autoplay
+  src: string;
+  poster?: string;
+  type?: 'video' | 'audio';
+  autoPlay?: boolean;
 }
 
-const MediaPortal: React.FC<MediaPortalProps> = ({
+export default function MediaPortal({
   src,
-  type = 'video',
   poster,
+  type = 'video',
   autoPlay = false,
-  muted = true,
-}) => {
-  const videoRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
+}: MediaPortalProps) {
+  const mediaRef = useRef<HTMLVideoElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [showControls, setShowControls] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const hideTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [lastInteraction, setLastInteraction] = useState(Date.now());
 
-  // HLS setup for video streams
+  // Initialize HLS for video streaming
   useEffect(() => {
-    if (type === 'video' && videoRef.current && Hls.isSupported() && src.endsWith('.m3u8')) {
+    if (type === 'video' && mediaRef.current && Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(src);
-      hls.attachMedia(videoRef.current as HTMLVideoElement);
+      hls.attachMedia(mediaRef.current);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        if (autoPlay) mediaRef.current?.play().catch(() => {});
+      });
+
       return () => {
         hls.destroy();
       };
-    } else if (videoRef.current && src.endsWith('.m3u8')) {
-      // Safari native support
-      (videoRef.current as HTMLVideoElement).src = src;
+    } else if (mediaRef.current && mediaRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+      mediaRef.current.src = src;
     }
-  }, [src, type]);
+  }, [src, type, autoPlay]);
 
-  // Autoplay on load
+  // Hide controls after inactivity
   useEffect(() => {
-    if (autoPlay && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-      setIsPlaying(true);
-    }
-  }, [autoPlay]);
+    const interval = setInterval(() => {
+      if (Date.now() - lastInteraction > 3000 && isPlaying) {
+        setShowControls(false);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lastInteraction, isPlaying]);
 
-  // Auto-hide controls
-  const showTemporarily = () => {
-    if (hideTimeout.current) clearTimeout(hideTimeout.current);
+  const handleInteraction = () => {
+    setLastInteraction(Date.now());
     setShowControls(true);
-    hideTimeout.current = setTimeout(() => {
-      setShowControls(false);
-    }, 3000);
   };
 
-  // Toggle play/pause
-  const togglePlay = () => {
-    if (!videoRef.current) return;
+  const handlePlayPause = () => {
+    if (!mediaRef.current) return;
     if (isPlaying) {
-      videoRef.current.pause();
+      mediaRef.current.pause();
       setIsPlaying(false);
     } else {
-      videoRef.current.play().catch(() => {});
+      mediaRef.current.play().catch(() => {});
       setIsPlaying(true);
     }
-  };
-
-  const commonProps = {
-    ref: videoRef,
-    controls: false,
-    muted,
-    onClick: togglePlay,
-    onMouseMove: showTemporarily,
-    onTouchStart: showTemporarily,
-    className: 'w-full h-full object-contain bg-black',
-    poster,
   };
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-black">
+    <div
+      className="relative w-full h-full flex items-center justify-center bg-black"
+      onMouseMove={handleInteraction}
+      onTouchStart={handleInteraction}
+    >
       {type === 'video' ? (
-        <video {...commonProps} />
+        <video
+          ref={mediaRef}
+          className="w-full h-auto max-h-[90vh] rounded-md"
+          poster={poster}
+          muted
+          controls={showControls}
+          onClick={handlePlayPause}
+        />
       ) : (
-        <audio {...commonProps as any} />
+        <audio
+          ref={mediaRef as unknown as React.RefObject<HTMLAudioElement>}
+          className="w-full"
+          controls={showControls}
+        />
       )}
 
-      {/* Overlay controls */}
-      <div
-        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-          showControls ? 'opacity-100' : 'opacity-0'
-        } bg-gradient-to-t from-black/60 via-transparent to-black/60`}
-        onClick={togglePlay}
+      {/* Overlay Controls */}
+      <button
+        onClick={handlePlayPause}
+        className="absolute inset-0 flex items-center justify-center text-white text-6xl"
+        style={{ display: showControls ? 'flex' : 'none' }}
       >
-        <button
-          className="text-white text-5xl bg-black/50 rounded-full px-6 py-4"
-          aria-label={isPlaying ? 'Pause' : 'Play'}
-        >
-          {isPlaying ? '❚❚' : '▶'}
-        </button>
-      </div>
+        {isPlaying ? '⏸' : '▶️'}
+      </button>
     </div>
   );
-};
-
-export default MediaPortal;
+}
