@@ -1,36 +1,36 @@
-"use client";
+'use client';
 
-import { motion, HTMLMotionProps } from "framer-motion";
-import React, { forwardRef } from "react";
+import { motion } from 'framer-motion';
+import React from 'react';
 
-export const MotionDiv = forwardRef<HTMLDivElement, HTMLMotionProps<"div">>(
-  (props, ref) => <motion.div ref={ref} {...props} />
-);
+export const MotionDiv = motion.div;
+export const MotionSection = motion.section;
+export const MotionMain = motion.main;
 
-export const MotionSection = forwardRef<HTMLElement, HTMLMotionProps<"section">>(
-  (props, ref) => <motion.section ref={ref} {...props} />
-);
+interface FadeInProps {
+  children: React.ReactNode;
+  delay?: number;
+  duration?: number;
+  className?: string;
+}
 
-export const MotionNav = forwardRef<HTMLElement, HTMLMotionProps<"nav">>(
-  (props, ref) => <motion.nav ref={ref} {...props} />
-);
-
-export const MotionHeader = forwardRef<HTMLElement, HTMLMotionProps<"header">>(
-  (props, ref) => <motion.header ref={ref} {...props} />
-);
-
-export const MotionFooter = forwardRef<HTMLElement, HTMLMotionProps<"footer">>(
-  (props, ref) => <motion.footer ref={ref} {...props} />
-);
-
-export const MotionMain = forwardRef<HTMLElement, HTMLMotionProps<"main">>(
-  (props, ref) => <motion.main ref={ref} {...props} />
-);
-
-// For better DevTools readability
-MotionDiv.displayName = "MotionDiv";
-MotionSection.displayName = "MotionSection";
-MotionNav.displayName = "MotionNav";
-MotionHeader.displayName = "MotionHeader";
-MotionFooter.displayName = "MotionFooter";
-MotionMain.displayName = "MotionMain";
+/**
+ * FadeInView - a reusable animation wrapper for fade-in entrance effects
+ */
+export const FadeInView: React.FC<FadeInProps> = ({
+  children,
+  delay = 0.1,
+  duration = 0.6,
+  className = ''
+}) => {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration, ease: 'easeOut' }}
+    >
+      {children}
+    </motion.div>
+  );
+};
