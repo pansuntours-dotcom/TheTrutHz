@@ -1,12 +1,10 @@
-// Force Node.js runtime and prevent build-time pre-rendering
+// app/api/gallery/route.ts
+// Force Node runtime and make route dynamic (avoid build-time collection)
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-// app/api/gallery/route.ts
+
 import { NextResponse } from 'next/server';
 import { supabase } from '../../../lib/supabaseClient';
-
-// Force this route to use Node.js runtime (not Edge)
-export const runtime = 'nodejs';
 
 export async function GET() {
   try {
@@ -23,7 +21,7 @@ export async function GET() {
 
     return NextResponse.json({ items: data || [] });
   } catch (err: any) {
-    console.error('Unexpected error:', err);
+    console.error('Unexpected error in gallery route:', err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
