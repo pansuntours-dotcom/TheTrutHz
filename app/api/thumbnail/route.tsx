@@ -1,3 +1,6 @@
+// Force Node.js runtime and prevent build-time pre-rendering
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 import { ImageResponse } from "@vercel/og";
 
 export const runtime = "edge";
