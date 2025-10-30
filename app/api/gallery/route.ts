@@ -1,3 +1,6 @@
+// Force Node.js runtime and prevent build-time pre-rendering
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 // app/api/gallery/route.ts
 import { NextResponse } from 'next/server';
 import { supabase } from '../../../lib/supabaseClient';
