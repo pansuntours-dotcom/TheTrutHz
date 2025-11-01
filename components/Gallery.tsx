@@ -15,6 +15,7 @@ interface GalleryItem {
 export default function Gallery() {
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [newItemBanner, setNewItemBanner] = useState(false);
 
   // Fetch gallery items
   const fetchGallery = async () => {
@@ -35,36 +36,43 @@ export default function Gallery() {
   useEffect(() => {
     fetchGallery();
 
-    // ✅ Subscribe to real-time updates
+    // ✅ Real-time updates
     const channel = supabase
       .channel('gallery-updates')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'gallery_items' },
         (payload) => {
-          console.log('🔄 Gallery updated:', payload);
+          console.log('🔄 Gallery update detected:', payload);
 
           setGallery((prev) => {
-            const newData = [...prev];
+            let updated = [...prev];
 
             switch (payload.eventType) {
               case 'INSERT':
-                return [payload.new as GalleryItem, ...newData];
+                updated = [payload.new as GalleryItem, ...updated];
+                // Trigger banner animation
+                setNewItemBanner(true);
+                setTimeout(() => setNewItemBanner(false), 3000);
+                break;
+
               case 'UPDATE':
-                return newData.map((item) =>
+                updated = updated.map((item) =>
                   item.id === payload.new.id ? (payload.new as GalleryItem) : item
                 );
+                break;
+
               case 'DELETE':
-                return newData.filter((item) => item.id !== payload.old.id);
-              default:
-                return prev;
+                updated = updated.filter((item) => item.id !== payload.old.id);
+                break;
             }
+            return updated;
           });
         }
       )
       .subscribe();
 
-    // ✅ Cleanup on unmount
+    // ✅ Cleanup subscription
     return () => {
       supabase.removeChannel(channel);
     };
@@ -79,23 +87,33 @@ export default function Gallery() {
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 p-6">
-      {gallery.map((item) => (
-        <div
-          key={item.id}
-          className="bg-white/5 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-        >
-          <img
-            src={item.image_url}
-            alt={item.title}
-            className="rounded-md object-cover w-full h-48 mb-3"
-          />
-          <h3 className="text-lg font-semibold text-white mb-1">{item.title}</h3>
-          {item.description && (
-            <p className="text-sm text-gray-300 line-clamp-2">{item.description}</p>
-          )}
+    <div className="relative">
+      {/* ✨ New item banner */}
+      {newItemBanner && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-emerald-500 text-white px-5 py-2 rounded-full shadow-lg animate-fade-in-out">
+          ✨ New item added!
         </div>
-      ))}
+      )}
+
+      {/* Gallery grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 p-6">
+        {gallery.map((item) => (
+          <div
+            key={item.id}
+            className="bg-white/5 p-4 rounded-lg shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300"
+          >
+            <img
+              src={item.image_url}
+              alt={item.title}
+              className="rounded-md object-cover w-full h-48 mb-3"
+            />
+            <h3 className="text-lg font-semibold text-white mb-1">{item.title}</h3>
+            {item.description && (
+              <p className="text-sm text-gray-300 line-clamp-2">{item.description}</p>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
