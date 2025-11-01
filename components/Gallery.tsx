@@ -1,21 +1,14 @@
+// components/Gallery.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import LivePlayer from './LivePlayer';
-
-export interface GalleryItem {
-  id: string;
-  title: string;
-  description: string;
-  video_url: string;
-  image_url: string;
-  resonance_score: number;
-}
+import type { GalleryItem } from '../types';
 
 const Gallery: React.FC = () => {
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -27,12 +20,12 @@ const Gallery: React.FC = () => {
           .limit(200);
 
         if (error) {
-          console.error('Supabase fetch error:', error);
-        } else {
-          setGalleryItems(data || []);
+          setError(error.message);
+          return;
         }
-      } catch (err) {
-        console.error('Unexpected fetch error:', err);
+        setItems(data || []);
+      } catch (err: any) {
+        setError(err.message || 'Unexpected error fetching gallery');
       } finally {
         setLoading(false);
       }
@@ -41,20 +34,16 @@ const Gallery: React.FC = () => {
     fetchGallery();
   }, []);
 
-  if (loading) {
-    return <p>Loading gallery...</p>;
-  }
+  if (loading) return <p>Loading gallery...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-      {galleryItems.map((item) => (
-        <div key={item.id} className="border rounded-lg overflow-hidden shadow-lg">
-          <img src={item.image_url} alt={item.title} className="w-full h-48 object-cover" />
-          <div className="p-4">
-            <h2 className="text-lg font-semibold">{item.title}</h2>
-            <p className="text-sm text-gray-600">{item.description}</p>
-            {item.video_url && <LivePlayer url={item.video_url} />}
-          </div>
+    <div className="gallery-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+      {items.map(item => (
+        <div key={item.id} className="gallery-item">
+          <img src={item.image_url} alt={item.title} style={{ width: '100%', borderRadius: '8px' }} />
+          <h3>{item.title}</h3>
+          <p>Score: {item.resonance_score}</p>
         </div>
       ))}
     </div>
