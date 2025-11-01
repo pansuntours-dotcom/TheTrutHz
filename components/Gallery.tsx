@@ -2,101 +2,59 @@
 
 import React, { useEffect, useState } from 'react';
 import LivePlayer from './LivePlayer';
+import { supabase } from '../lib/supabaseClient';
 
 interface GalleryItem {
   id: string;
   title: string;
-  description?: string;
-  thumbnail_url?: string;
   video_url?: string;
-  resonance_score?: number;
+  image_url?: string;
+  resonance_score: number;
 }
 
-export default function Gallery() {
+const Gallery: React.FC = () => {
   const [items, setItems] = useState<GalleryItem[]>([]);
-  const [selected, setSelected] = useState<GalleryItem | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchGallery() {
-      try {
-        const res = await fetch('/api/gallery');
-        if (!res.ok) throw new Error(`Error: ${res.status}`);
-        const data = await res.json();
-        setItems(data.items || []);
-      } catch (err: any) {
-        console.error('Error loading gallery:', err);
-        setError('Failed to load gallery.');
-      } finally {
-        setLoading(false);
+    const fetchGallery = async () => {
+      const { data, error } = await supabase
+        .from<GalleryItem>('gallery_items')
+        .select('*')
+        .order('resonance_score', { ascending: false })
+        .limit(200);
+
+      if (error) {
+        console.error('Supabase fetch error:', error.message);
+      } else if (data) {
+        setItems(data);
       }
-    }
+      setLoading(false);
+    };
 
     fetchGallery();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-black text-white">
-        <p>Loading gallery...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-black text-red-500">
-        <p>{error}</p>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading gallery...</div>;
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <h1 className="text-3xl font-bold text-center mb-8">🎵 The Resonance Gallery</h1>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => setSelected(item)}
-            className="cursor-pointer group relative rounded-lg overflow-hidden border border-gray-800 hover:border-indigo-500 transition"
-          >
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+      {items.map((item) => (
+        <div key={item.id} className="bg-white rounded shadow p-2">
+          {item.video_url ? (
+            <LivePlayer src={item.video_url} className="w-full rounded" />
+          ) : (
             <img
-              src={item.thumbnail_url || '/placeholder.jpg'}
+              src={item.image_url || '/placeholder.png'}
               alt={item.title}
-              className="w-full h-48 object-cover group-hover:opacity-80 transition"
+              className="w-full rounded"
             />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent p-2">
-              <p className="text-sm font-semibold">{item.title}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Modal for LivePlayer */}
-      {selected && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center z-50 p-4">
-          <button
-            onClick={() => setSelected(null)}
-            className="absolute top-6 right-6 text-white text-xl font-bold hover:text-indigo-400"
-          >
-            ✕
-          </button>
-          <h2 className="text-2xl font-bold mb-4">{selected.title}</h2>
-          <LivePlayer
-            src={selected.video_url || ''}
-            poster={selected.thumbnail_url}
-            controls
-            autoPlay
-            className="w-full max-w-3xl"
-          />
-          {selected.description && (
-            <p className="text-gray-400 mt-4 max-w-2xl text-center">{selected.description}</p>
           )}
+          <h3 className="mt-2 text-center font-semibold">{item.title}</h3>
         </div>
-      )}
+      ))}
     </div>
   );
-}
+};
+
+export default Gallery;
