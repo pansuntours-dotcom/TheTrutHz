@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 
 interface LivePlayerProps {
@@ -9,24 +9,26 @@ interface LivePlayerProps {
   className?: string;
 }
 
-const LivePlayer: React.FC<LivePlayerProps> = ({ src, poster = '', className = '' }) => {
+const LivePlayer: React.FC<LivePlayerProps> = ({ src, poster, className }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    if (!videoRef.current) return;
 
-    // HLS support
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(src);
-      hls.attachMedia(video);
+      hls.attachMedia(videoRef.current);
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        console.error('HLS error:', data);
+      });
+
       return () => {
         hls.destroy();
       };
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      // Native HLS (Safari)
-      video.src = src;
+    } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+      // Fallback for Safari
+      videoRef.current.src = src;
     }
   }, [src]);
 
@@ -35,9 +37,9 @@ const LivePlayer: React.FC<LivePlayerProps> = ({ src, poster = '', className = '
       ref={videoRef}
       controls
       muted
-      className={className}
+      autoPlay
       poster={poster}
-      playsInline
+      className={className}
     />
   );
 };
