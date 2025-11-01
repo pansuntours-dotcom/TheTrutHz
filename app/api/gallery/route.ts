@@ -1,20 +1,12 @@
 // app/api/gallery/route.ts
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../../../lib/supabaseClient';
 
-// ✅ Use the Edge runtime (faster, cleaner, Netlify-compatible)
-export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
-
-// ✅ Initialize Supabase using environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Force Node.js runtime for server-side API (optional, remove if using Edge)
+export const runtime = 'nodejs';
 
 export async function GET() {
   try {
-    // Query your Supabase table
     const { data, error } = await supabase
       .from('gallery_items')
       .select('*')
@@ -26,10 +18,9 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Return items as JSON
-    return NextResponse.json({ items: data || [] }, { status: 200 });
+    return NextResponse.json({ items: data || [] });
   } catch (err: any) {
-    console.error('API error:', err);
-    return NextResponse.json({ error: err.message || 'Unknown error' }, { status: 500 });
+    console.error('Unexpected error:', err);
+    return NextResponse.json({ error: 'Unexpected server error' }, { status: 500 });
   }
 }
