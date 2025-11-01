@@ -1,13 +1,18 @@
 [build]
-  command = "npm run build"
+  command = "npm install --legacy-peer-deps && npm run build"
   publish = ".next"
 
-  # Environment variables for Next.js & Supabase
-  [build.environment]
-    NEXT_PUBLIC_SUPABASE_URL = "https://YOUR_SUPABASE_URL.supabase.co"
-    NEXT_PUBLIC_SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY"
-    NEXT_TELEMETRY_DISABLED = "1"
-    NEXT_CACHE_HANDLER = "filesystem"
+# Inline environment variables (optional, or set in Netlify UI)
+[build.environment]
+  NEXT_CACHE_HANDLER = "filesystem"
+  NODE_VERSION = "22.21.1"
+  NEXT_PUBLIC_SUPABASE_URL = "your-supabase-url"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "your-anon-public-key"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[dev]
+  command = "npm run dev"
+  port = 3000
+  publish = ".next"
