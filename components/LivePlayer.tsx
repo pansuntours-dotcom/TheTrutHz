@@ -1,53 +1,88 @@
-// components/LivePlayer.tsx
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Hls from 'hls.js';
 
-export default function LivePlayer({ url }: { url: string }) {
+interface LivePlayerProps {
+  src: string;
+  poster?: string;
+  autoPlay?: boolean;
+  controls?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  className?: string;
+}
+
+const LivePlayer: React.FC<LivePlayerProps> = ({
+  src,
+  poster,
+  autoPlay = false,
+  controls = true,
+  loop = false,
+  muted = false,
+  className = '',
+}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [hlsLoaded, setHlsLoaded] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    let hls: any = null;
-    let mounted = true;
+    const video = videoRef.current;
+    if (!video) return;
 
-    async function init() {
-      if (!videoRef.current) return;
-      if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-        // native HLS (Safari)
-        videoRef.current.src = url;
-        try { await videoRef.current.play(); } catch {}
-        return;
-      }
+    // Reset any previous error state
+    setIsError(false);
 
-      // dynamic import of hls.js (only in browser)
-      const Hls = (await import('hls.js')).default;
-      if (!mounted) return;
-      if (Hls.isSupported()) {
-        hls = new Hls();
-        hls.loadSource(url);
-        hls.attachMedia(videoRef.current!);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          videoRef.current!.play().catch(()=>{});
-        });
-        setHlsLoaded(true);
-      } else {
-        videoRef.current!.src = url;
-      }
+    if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Native HLS support (Safari, iOS)
+      video.src = src;
+    } else if (Hls.isSupported()) {
+      // Use hls.js for other browsers
+      const hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true,
+      });
+
+      hls.loadSource(src);
+      hls.attachMedia(video);
+
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        if (data.fatal) {
+          console.error('HLS.js fatal error:', data);
+          setIsError(true);
+          hls.destroy();
+        }
+      });
+
+      return () => {
+        hls.destroy();
+      };
+    } else {
+      // Browser not supported
+      console.error('HLS not supported in this browser');
+      setIsError(true);
     }
-
-    init();
-
-    return () => {
-      mounted = false;
-      if (hls) try{ hls.destroy(); }catch{}
-    };
-  }, [url]);
+  }, [src]);
 
   return (
-    <div className="live-player">
-      <video ref={videoRef} controls style={{width:'100%', height:'100%'}} />
-      {!hlsLoaded && <div style={{position:'absolute', left:12, top:12}} className="muted">Loading stream…</div>}
+    <div className={`relative flex flex-col items-center justify-center ${className}`}>
+      {isError ? (
+        <div className="text-center text-red-500 font-semibold p-4">
+          ⚠️ Video playback error. Please try again later.
+        </div>
+      ) : (
+        <video
+          ref={videoRef}
+          className="w-full max-w-3xl rounded-lg shadow-md bg-black"
+          poster={poster}
+          controls={controls}
+          autoPlay={autoPlay}
+          loop={loop}
+          muted={muted}
+          playsInline
+        />
+      )}
     </div>
   );
-}
+};
+
+export default LivePlayer;
