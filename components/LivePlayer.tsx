@@ -5,24 +5,33 @@ import React, { useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 
 interface LivePlayerProps {
-  src: string; // HLS stream URL
-  width?: number;
-  height?: number;
+  src: string;
+  poster?: string;
+  autoPlay?: boolean;
+  controls?: boolean;
+  className?: string;
 }
 
-const LivePlayer: React.FC<LivePlayerProps> = ({ src, width = 640, height = 360 }) => {
+export default function LivePlayer({
+  src,
+  poster,
+  autoPlay = false,
+  controls = true,
+  className = 'w-full h-auto rounded',
+}: LivePlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    if (!videoRef.current) return;
+
     const video = videoRef.current;
-    if (!video) return;
 
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(src);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(err => console.error('Video play error:', err));
+        if (autoPlay) video.play().catch(() => {});
       });
 
       return () => {
@@ -30,13 +39,17 @@ const LivePlayer: React.FC<LivePlayerProps> = ({ src, width = 640, height = 360 
       };
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = src;
-      video.play().catch(err => console.error('Video play error:', err));
-    } else {
-      console.error('HLS not supported in this browser');
+      if (autoPlay) video.play().catch(() => {});
     }
-  }, [src]);
+  }, [src, autoPlay]);
 
-  return <video ref={videoRef} width={width} height={height} controls />;
-};
-
-export default LivePlayer;
+  return (
+    <video
+      ref={videoRef}
+      poster={poster}
+      controls={controls}
+      autoPlay={autoPlay}
+      className={className}
+    />
+  );
+}
