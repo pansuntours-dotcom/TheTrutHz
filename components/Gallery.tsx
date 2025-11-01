@@ -1,33 +1,34 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import LivePlayer from './LivePlayer';
 import { supabase } from '../lib/supabaseClient';
 
 interface GalleryItem {
-  id: string;
+  id: number;
   title: string;
+  description?: string;
+  image_url: string;
   video_url?: string;
-  image_url?: string;
-  resonance_score: number;
+  resonance_score?: number;
+  created_at?: string;
 }
 
-const Gallery: React.FC = () => {
+export default function Gallery() {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGallery = async () => {
       const { data, error } = await supabase
-        .from<GalleryItem>('gallery_items')
+        .from<'gallery_items', GalleryItem>('gallery_items')
         .select('*')
         .order('resonance_score', { ascending: false })
         .limit(200);
 
       if (error) {
-        console.error('Supabase fetch error:', error.message);
-      } else if (data) {
-        setItems(data);
+        console.error('Error fetching gallery:', error);
+      } else {
+        setItems(data || []);
       }
       setLoading(false);
     };
@@ -35,26 +36,23 @@ const Gallery: React.FC = () => {
     fetchGallery();
   }, []);
 
-  if (loading) return <div>Loading gallery...</div>;
+  if (loading) return <p className="text-center mt-10">Loading gallery...</p>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
       {items.map((item) => (
-        <div key={item.id} className="bg-white rounded shadow p-2">
+        <div key={item.id} className="bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform">
           {item.video_url ? (
-            <LivePlayer src={item.video_url} className="w-full rounded" />
+            <video src={item.video_url} controls className="w-full h-64 object-cover" />
           ) : (
-            <img
-              src={item.image_url || '/placeholder.png'}
-              alt={item.title}
-              className="w-full rounded"
-            />
+            <img src={item.image_url} alt={item.title} className="w-full h-64 object-cover" />
           )}
-          <h3 className="mt-2 text-center font-semibold">{item.title}</h3>
+          <div className="p-4">
+            <h2 className="text-lg font-semibold text-white">{item.title}</h2>
+            {item.description && <p className="text-gray-400 text-sm mt-2">{item.description}</p>}
+          </div>
         </div>
       ))}
     </div>
   );
-};
-
-export default Gallery;
+}
