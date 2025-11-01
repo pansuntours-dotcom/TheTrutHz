@@ -21,7 +21,7 @@ export default function Gallery() {
   // ✅ Fetch gallery items
   const fetchGallery = async () => {
     const { data, error } = await supabase
-      .from<GalleryItem, GalleryItem>('gallery_items')
+      .from('gallery_items')
       .select('*')
       .order('resonance_score', { ascending: false })
       .limit(200);
@@ -29,7 +29,7 @@ export default function Gallery() {
     if (error) {
       console.error('Error fetching gallery:', error);
     } else {
-      setGallery(data || []);
+      setGallery((data as GalleryItem[]) || []);
     }
     setLoading(false);
   };
@@ -64,12 +64,16 @@ export default function Gallery() {
 
               case 'UPDATE':
                 updated = updated.map((item) =>
-                  item.id === payload.new.id ? (payload.new as GalleryItem) : item
+                  item.id === (payload.new as GalleryItem).id
+                    ? (payload.new as GalleryItem)
+                    : item
                 );
                 break;
 
               case 'DELETE':
-                updated = updated.filter((item) => item.id !== payload.old.id);
+                updated = updated.filter(
+                  (item) => item.id !== (payload.old as GalleryItem).id
+                );
                 break;
             }
             return updated;
@@ -78,7 +82,7 @@ export default function Gallery() {
       )
       .subscribe();
 
-    // Cleanup on unmount
+    // Cleanup
     return () => {
       supabase.removeChannel(channel);
     };
