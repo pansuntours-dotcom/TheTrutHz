@@ -6,21 +6,20 @@ import { supabase } from '../lib/supabaseClient';
 interface GalleryItem {
   id: number;
   title: string;
-  description?: string;
   image_url: string;
-  video_url?: string;
+  description?: string;
   resonance_score?: number;
   created_at?: string;
 }
 
 export default function Gallery() {
-  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGallery = async () => {
       const { data, error } = await supabase
-        .from<'gallery_items', GalleryItem>('gallery_items')
+        .from<GalleryItem, GalleryItem>('gallery_items')
         .select('*')
         .order('resonance_score', { ascending: false })
         .limit(200);
@@ -28,29 +27,39 @@ export default function Gallery() {
       if (error) {
         console.error('Error fetching gallery:', error);
       } else {
-        setItems(data || []);
+        setGallery(data || []);
       }
+
       setLoading(false);
     };
 
     fetchGallery();
   }, []);
 
-  if (loading) return <p className="text-center mt-10">Loading gallery...</p>;
+  if (loading) {
+    return <div className="text-center py-10 text-gray-400">Loading gallery...</div>;
+  }
+
+  if (gallery.length === 0) {
+    return <div className="text-center py-10 text-gray-400">No items found.</div>;
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-      {items.map((item) => (
-        <div key={item.id} className="bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition-transform">
-          {item.video_url ? (
-            <video src={item.video_url} controls className="w-full h-64 object-cover" />
-          ) : (
-            <img src={item.image_url} alt={item.title} className="w-full h-64 object-cover" />
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 p-6">
+      {gallery.map((item) => (
+        <div
+          key={item.id}
+          className="bg-white/5 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+        >
+          <img
+            src={item.image_url}
+            alt={item.title}
+            className="rounded-md object-cover w-full h-48 mb-3"
+          />
+          <h3 className="text-lg font-semibold text-white mb-1">{item.title}</h3>
+          {item.description && (
+            <p className="text-sm text-gray-300 line-clamp-2">{item.description}</p>
           )}
-          <div className="p-4">
-            <h2 className="text-lg font-semibold text-white">{item.title}</h2>
-            {item.description && <p className="text-gray-400 text-sm mt-2">{item.description}</p>}
-          </div>
         </div>
       ))}
     </div>
