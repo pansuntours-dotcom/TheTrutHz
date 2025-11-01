@@ -16,24 +16,58 @@ export default function Gallery() {
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch gallery items
+  const fetchGallery = async () => {
+    const { data, error } = await supabase
+      .from<GalleryItem, GalleryItem>('gallery_items')
+      .select('*')
+      .order('resonance_score', { ascending: false })
+      .limit(200);
+
+    if (error) {
+      console.error('Error fetching gallery:', error);
+    } else {
+      setGallery(data || []);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchGallery = async () => {
-      const { data, error } = await supabase
-        .from<GalleryItem, GalleryItem>('gallery_items')
-        .select('*')
-        .order('resonance_score', { ascending: false })
-        .limit(200);
-
-      if (error) {
-        console.error('Error fetching gallery:', error);
-      } else {
-        setGallery(data || []);
-      }
-
-      setLoading(false);
-    };
-
     fetchGallery();
+
+    // ✅ Subscribe to real-time updates
+    const channel = supabase
+      .channel('gallery-updates')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'gallery_items' },
+        (payload) => {
+          console.log('🔄 Gallery updated:', payload);
+
+          setGallery((prev) => {
+            const newData = [...prev];
+
+            switch (payload.eventType) {
+              case 'INSERT':
+                return [payload.new as GalleryItem, ...newData];
+              case 'UPDATE':
+                return newData.map((item) =>
+                  item.id === payload.new.id ? (payload.new as GalleryItem) : item
+                );
+              case 'DELETE':
+                return newData.filter((item) => item.id !== payload.old.id);
+              default:
+                return prev;
+            }
+          });
+        }
+      )
+      .subscribe();
+
+    // ✅ Cleanup on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   if (loading) {
