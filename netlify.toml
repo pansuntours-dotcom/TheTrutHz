@@ -1,10 +1,21 @@
+# netlify.toml
+
 [build]
   command = "npm run build"
   publish = ".next"
+  
+  # Optional: enable caching
   environment = { 
-    NEXT_CACHE_HANDLER = "filesystem",
-    NODE_VERSION = "22.21.0"
+    NEXT_CACHE_HANDLER = "filesystem"
   }
+
+[dev]
+  framework = "#auto"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# Example: Environment variables (optional)
+# [context.production.environment]
+#   SUPABASE_URL = "your-supabase-url"
+#   SUPABASE_ANON_KEY = "your-supabase-anon-key"
