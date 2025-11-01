@@ -4,9 +4,11 @@
   command = "npm run build"
   publish = ".next"
   
-  # Optional: enable caching
+  # Inline environment variables
   environment = { 
-    NEXT_CACHE_HANDLER = "filesystem"
+    NEXT_CACHE_HANDLER = "filesystem",
+    SUPABASE_URL = "https://your-supabase-project-url.supabase.co",
+    SUPABASE_ANON_KEY = "your-supabase-anon-key"
   }
 
 [dev]
@@ -15,7 +17,7 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Example: Environment variables (optional)
+# Optional: separate context-specific environment variables
 # [context.production.environment]
-#   SUPABASE_URL = "your-supabase-url"
+#   SUPABASE_URL = "https://your-supabase-project-url.supabase.co"
 #   SUPABASE_ANON_KEY = "your-supabase-anon-key"
