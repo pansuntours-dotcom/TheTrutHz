@@ -6,97 +6,50 @@ import Hls from 'hls.js';
 interface MediaPortalProps {
   src: string;
   poster?: string;
-  type?: 'video' | 'audio';
-  autoPlay?: boolean;
+  title?: string;
 }
 
-export default function MediaPortal({
-  src,
-  poster,
-  type = 'video',
-  autoPlay = false,
-}: MediaPortalProps) {
-  const mediaRef = useRef<HTMLVideoElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
-  const [showControls, setShowControls] = useState(true);
-  const [lastInteraction, setLastInteraction] = useState(Date.now());
+export default function MediaPortal({ src, poster, title }: MediaPortalProps) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isReady, setIsReady] = useState(false);
 
-  // Initialize HLS for video streaming
   useEffect(() => {
-    if (type === 'video' && mediaRef.current && Hls.isSupported()) {
+    if (!videoRef.current) return;
+
+    if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(src);
-      hls.attachMedia(mediaRef.current);
+      hls.attachMedia(videoRef.current);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        if (autoPlay) mediaRef.current?.play().catch(() => {});
+        setIsReady(true);
       });
 
       return () => {
         hls.destroy();
       };
-    } else if (mediaRef.current && mediaRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-      mediaRef.current.src = src;
+    } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+      videoRef.current.src = src;
+      videoRef.current.addEventListener('loadedmetadata', () => {
+        setIsReady(true);
+      });
     }
-  }, [src, type, autoPlay]);
-
-  // Hide controls after inactivity
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (Date.now() - lastInteraction > 3000 && isPlaying) {
-        setShowControls(false);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [lastInteraction, isPlaying]);
-
-  const handleInteraction = () => {
-    setLastInteraction(Date.now());
-    setShowControls(true);
-  };
-
-  const handlePlayPause = () => {
-    if (!mediaRef.current) return;
-    if (isPlaying) {
-      mediaRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      mediaRef.current.play().catch(() => {});
-      setIsPlaying(true);
-    }
-  };
+  }, [src]);
 
   return (
-    <div
-      className="relative w-full h-full flex items-center justify-center bg-black"
-      onMouseMove={handleInteraction}
-      onTouchStart={handleInteraction}
-    >
-      {type === 'video' ? (
-        <video
-          ref={mediaRef}
-          className="w-full h-auto max-h-[90vh] rounded-md"
-          poster={poster}
-          muted
-          controls={showControls}
-          onClick={handlePlayPause}
-        />
-      ) : (
-        <audio
-          ref={mediaRef as unknown as React.RefObject<HTMLAudioElement>}
-          className="w-full"
-          controls={showControls}
-        />
-      )}
-
-      {/* Overlay Controls */}
-      <button
-        onClick={handlePlayPause}
-        className="absolute inset-0 flex items-center justify-center text-white text-6xl"
-        style={{ display: showControls ? 'flex' : 'none' }}
-      >
-        {isPlaying ? '⏸' : '▶️'}
-      </button>
+    <div className="flex flex-col items-center justify-center w-full">
+      {!isReady && <p className="text-gray-400 mb-2">Loading stream...</p>}
+      <video
+        ref={videoRef}
+        poster={poster}
+        controls
+        playsInline
+        autoPlay
+        muted
+        className="w-full max-w-3xl rounded-lg shadow-lg"
+        title={title || 'Live Stream'}
+      />
+      {title && <p className="mt-2 text-gray-300">{title}</p>}
     </div>
   );
 }
