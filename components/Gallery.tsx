@@ -1,68 +1,102 @@
-// components/Gallery.tsx
 'use client';
 
-import { useState } from 'react';
-import MediaPortal from './MediaPortal';
+import React, { useEffect, useState } from 'react';
 import LivePlayer from './LivePlayer';
-import ARViewer from './ARViewer';
 
-type Item = {
+interface GalleryItem {
   id: string;
   title: string;
-  type: 'image' | 'video' | 'live' | 'ar';
-  src: string;
-  thumb?: string;
-  model?: string;
-};
+  description?: string;
+  thumbnail_url?: string;
+  video_url?: string;
+  resonance_score?: number;
+}
 
-const SAMPLE: Item[] = [
-  { id:'1', title:'Sunset image', type:'image', src:'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=60', thumb: '' },
-  { id:'2', title:'Recorded video', type:'video', src:'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4', thumb: '' },
-  { id:'3', title:'Live stream (HLS)', type:'live', src:'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', thumb: '' },
-  { id:'4', title:'AR model', type:'ar', src:'', model:'https://modelviewer.dev/shared-assets/models/Astronaut.glb', thumb: '' }
-];
+export default function Gallery() {
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [selected, setSelected] = useState<GalleryItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-export default function Gallery(){
-  const [active, setActive] = useState<Item | null>(null);
+  useEffect(() => {
+    async function fetchGallery() {
+      try {
+        const res = await fetch('/api/gallery');
+        if (!res.ok) throw new Error(`Error: ${res.status}`);
+        const data = await res.json();
+        setItems(data.items || []);
+      } catch (err: any) {
+        console.error('Error loading gallery:', err);
+        setError('Failed to load gallery.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchGallery();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-black text-white">
+        <p>Loading gallery...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-black text-red-500">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <div className="gallery" aria-live="polite">
-        {SAMPLE.map(i => (
-          <div key={i.id} className="card" onClick={() => setActive(i)}>
-            <div style={{height:140, width:'100%', borderRadius:8, background:'#03131b', display:'flex', alignItems:'center', justifyContent:'center', color:'#7aa'} }>
-              <div style={{padding:10, textAlign:'center'}}>
-                <div style={{fontWeight:700}}>{i.title}</div>
-                <div className="muted" style={{fontSize:13}}>{i.type.toUpperCase()}</div>
-              </div>
+    <div className="min-h-screen bg-black text-white p-6">
+      <h1 className="text-3xl font-bold text-center mb-8">🎵 The Resonance Gallery</h1>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            onClick={() => setSelected(item)}
+            className="cursor-pointer group relative rounded-lg overflow-hidden border border-gray-800 hover:border-indigo-500 transition"
+          >
+            <img
+              src={item.thumbnail_url || '/placeholder.jpg'}
+              alt={item.title}
+              className="w-full h-48 object-cover group-hover:opacity-80 transition"
+            />
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent p-2">
+              <p className="text-sm font-semibold">{item.title}</p>
             </div>
           </div>
         ))}
       </div>
 
-      {active && (
-        <div className="portal" role="dialog" aria-modal="true" onClick={() => setActive(null)}>
-          <div className="modal" onClick={(e)=>e.stopPropagation()}>
-            <h2 style={{marginTop:0}}>{active.title}</h2>
-
-            {active.type === 'image' && <img src={active.src} style={{width:'100%', borderRadius:8}} alt={active.title} />}
-
-            {active.type === 'video' && (
-              <video controls style={{ width:'100%', borderRadius:8 }}>
-                <source src={active.src} />
-              </video>
-            )}
-
-            {active.type === 'live' && <LivePlayer url={active.src} />}
-
-            {active.type === 'ar' && active.model && <ARViewer src={active.model} />}
-
-            <div style={{marginTop:12, textAlign:'right'}}>
-              <button className="btn" onClick={()=>setActive(null)}>Close</button>
-            </div>
-          </div>
+      {/* Modal for LivePlayer */}
+      {selected && (
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center z-50 p-4">
+          <button
+            onClick={() => setSelected(null)}
+            className="absolute top-6 right-6 text-white text-xl font-bold hover:text-indigo-400"
+          >
+            ✕
+          </button>
+          <h2 className="text-2xl font-bold mb-4">{selected.title}</h2>
+          <LivePlayer
+            src={selected.video_url || ''}
+            poster={selected.thumbnail_url}
+            controls
+            autoPlay
+            className="w-full max-w-3xl"
+          />
+          {selected.description && (
+            <p className="text-gray-400 mt-4 max-w-2xl text-center">{selected.description}</p>
+          )}
         </div>
       )}
-    </>
+    </div>
   );
 }
