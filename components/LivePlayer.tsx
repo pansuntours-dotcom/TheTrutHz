@@ -4,49 +4,48 @@ import React, { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 
 interface LivePlayerProps {
-  src: string; // HLS stream URL
-  poster?: string; // Optional poster image
+  src: string; // HLS stream URL (m3u8)
+  autoplay?: boolean;
+  controls?: boolean;
+  width?: number | string;
+  height?: number | string;
 }
 
-const LivePlayer: React.FC<LivePlayerProps> = ({ src, poster }) => {
+const LivePlayer: React.FC<LivePlayerProps> = ({
+  src,
+  autoplay = false,
+  controls = true,
+  width = '100%',
+  height = 360,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [hls, setHls] = useState<Hls | null>(null);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      // Native HLS support (Safari)
-      video.src = src;
-    } else if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(src);
-      hls.attachMedia(video);
-
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        console.error('HLS error:', data);
-        setError('Error loading video stream.');
-      });
-
-      return () => {
-        hls.destroy();
-      };
-    } else {
-      setError('Your browser does not support HLS playback.');
+    if (videoRef.current) {
+      if (Hls.isSupported()) {
+        const hlsInstance = new Hls();
+        hlsInstance.loadSource(src);
+        hlsInstance.attachMedia(videoRef.current);
+        setHls(hlsInstance);
+      } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+        videoRef.current.src = src;
+      }
     }
-  }, [src]);
 
-  if (error) return <p className="text-red-500">{error}</p>;
+    return () => {
+      if (hls) {
+        hls.destroy();
+      }
+    };
+  }, [src]);
 
   return (
     <video
       ref={videoRef}
-      poster={poster}
-      controls
-      autoPlay
-      muted
-      className="w-full max-w-full rounded shadow-lg"
+      controls={controls}
+      autoPlay={autoplay}
+      style={{ width, height }}
     />
   );
 };
