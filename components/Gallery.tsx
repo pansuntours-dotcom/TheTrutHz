@@ -1,70 +1,61 @@
+// components/Gallery.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import LivePlayer from './LivePlayer';
 
-interface GalleryItem {
+export interface GalleryItem {
   id: string;
   title: string;
-  description?: string;
-  media_url: string;
-  thumbnail_url?: string;
-  resonance_score?: number;
-  created_at?: string;
+  image_url: string;
+  resonance_score: number;
+  created_at: string;
 }
 
-export default function Gallery() {
-  const [items, setItems] = useState<GalleryItem[]>([]);
+const Gallery: React.FC = () => {
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGallery = async () => {
-      const { data, error } = await supabase
-        .from('gallery_items')
-        .select('*')
-        .order('resonance_score', { ascending: false })
-        .limit(200);
+      try {
+        const { data, error } = await supabase
+          .from<GalleryItem>('gallery_items')
+          .select('*')
+          .order('resonance_score', { ascending: false })
+          .limit(200);
 
-      if (error) {
-        console.error('Error fetching gallery:', error.message);
-      } else {
-        setItems(data || []);
+        if (error) throw error;
+        if (data) setGallery(data);
+      } catch (err: any) {
+        console.error('Error fetching gallery:', err.message);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchGallery();
   }, []);
 
-  if (loading) {
-    return <p className="text-center text-gray-400">Loading gallery...</p>;
-  }
+  if (loading) return <p>Loading gallery...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-      {items.map((item) => (
-        <div
-          key={item.id}
-          className="bg-gray-900 text-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200"
-        >
-          {item.media_url.endsWith('.m3u8') ? (
-            <LivePlayer src={item.media_url} />
-          ) : (
-            <video
-              src={item.media_url}
-              controls
-              className="w-full h-60 object-cover"
-            />
-          )}
-          <div className="p-3">
-            <h3 className="text-lg font-semibold">{item.title}</h3>
-            {item.description && (
-              <p className="text-gray-400 text-sm mt-1">{item.description}</p>
-            )}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {gallery.map((item) => (
+        <div key={item.id} className="border rounded overflow-hidden shadow-md">
+          <img src={item.image_url} alt={item.title} className="w-full h-48 object-cover" />
+          <div className="p-4">
+            <h2 className="text-lg font-bold">{item.title}</h2>
+            <p>Score: {item.resonance_score}</p>
+            <p className="text-sm text-gray-500">{new Date(item.created_at).toLocaleDateString()}</p>
           </div>
         </div>
       ))}
     </div>
   );
-}
+};
+
+export default Gallery;
