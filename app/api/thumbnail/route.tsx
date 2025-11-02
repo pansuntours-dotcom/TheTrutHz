@@ -1,40 +1,37 @@
-import { NextResponse } from "next/server";
+// app/api/thumbnail/route.tsx
+import { ImageResponse } from '@vercel/og';
+
+export const runtime = 'edge'; // ensures edge/serverless runtime
 
 export async function GET() {
   try {
-    // Try loading satori and resvg-js dynamically
-    const satori = await import("satori").then(mod => mod.default || mod);
-    const { Resvg } = await import("@resvg/resvg-js");
+    // Example: simple OG image with a colored background and text
+    const width = 1200;
+    const height = 630;
 
-    const svg = await satori(
-      <div
-        style={{
-          display: "flex",
-          width: "800px",
-          height: "400px",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#000",
-          color: "#0ff",
-          fontSize: "48px",
-          fontWeight: "bold",
-        }}
-      >
-        The TrutHz
-      </div>,
-      { width: 800, height: 400, fonts: [] }
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
+            backgroundColor: '#1a1a1a',
+            color: '#fff',
+            fontSize: 72,
+            fontWeight: 700,
+            fontFamily: 'sans-serif',
+          }}
+        >
+          The TrutHz
+        </div>
+      ),
+      { width, height }
     );
-
-    const resvg = new Resvg(svg);
-    const pngData = resvg.render().asPng();
-    return new NextResponse(pngData, {
-      headers: { "Content-Type": "image/png" },
-    });
-  } catch (error) {
-    console.warn("Thumbnail generation skipped:", error);
-    // Fallback: return a simple JSON response so build never fails
-    return NextResponse.json({
-      message: "Thumbnail generation is disabled in this build environment.",
-    });
+  } catch (err) {
+    console.error(err);
+    return new Response('Failed to generate image', { status: 500 });
   }
 }
