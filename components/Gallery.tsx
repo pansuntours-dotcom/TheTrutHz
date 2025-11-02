@@ -1,80 +1,68 @@
-// components/Gallery.tsx
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import Hls from 'hls.js';
+import LivePlayer from './LivePlayer';
 
-// Type for a gallery item
-export interface GalleryItem {
-  id: number;
+interface GalleryItem {
+  id: string;
   title: string;
   description?: string;
-  image_url?: string;
-  video_url?: string;
+  media_url: string;
+  thumbnail_url?: string;
   resonance_score?: number;
+  created_at?: string;
 }
 
 export default function Gallery() {
-  const [gallery, setGallery] = useState<GalleryItem[]>([]);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGallery = async () => {
       const { data, error } = await supabase
-        .from<GalleryItem>('gallery_items')
+        .from('gallery_items')
         .select('*')
         .order('resonance_score', { ascending: false })
         .limit(200);
 
       if (error) {
         console.error('Error fetching gallery:', error.message);
-        return;
+      } else {
+        setItems(data || []);
       }
-
-      setGallery(data || []);
+      setLoading(false);
     };
 
     fetchGallery();
   }, []);
 
-  useEffect(() => {
-    // Example: auto-play first video if available
-    if (gallery.length > 0 && gallery[0].video_url && videoRef.current) {
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(gallery[0].video_url);
-        hls.attachMedia(videoRef.current);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          videoRef.current?.play();
-        });
-      } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
-        videoRef.current.src = gallery[0].video_url;
-        videoRef.current.play();
-      }
-    }
-  }, [gallery]);
+  if (loading) {
+    return <p className="text-center text-gray-400">Loading gallery...</p>;
+  }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-      {gallery.map((item) => (
-        <div key={item.id} className="border rounded p-2 shadow">
-          {item.image_url && (
-            <img src={item.image_url} alt={item.title} className="w-full h-auto rounded" />
-          )}
-          {item.video_url && (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="bg-gray-900 text-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200"
+        >
+          {item.media_url.endsWith('.m3u8') ? (
+            <LivePlayer src={item.media_url} />
+          ) : (
             <video
-              ref={videoRef}
+              src={item.media_url}
               controls
-              className="w-full h-auto rounded mt-2"
-              poster={item.image_url || undefined}
+              className="w-full h-60 object-cover"
             />
           )}
-          <h3 className="font-bold mt-2">{item.title}</h3>
-          {item.description && <p className="text-sm mt-1">{item.description}</p>}
-          {item.resonance_score !== undefined && (
-            <p className="text-xs text-gray-500">Score: {item.resonance_score}</p>
-          )}
+          <div className="p-3">
+            <h3 className="text-lg font-semibold">{item.title}</h3>
+            {item.description && (
+              <p className="text-gray-400 text-sm mt-1">{item.description}</p>
+            )}
+          </div>
         </div>
       ))}
     </div>
