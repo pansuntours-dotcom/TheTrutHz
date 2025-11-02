@@ -1,11 +1,10 @@
 // app/api/thumbnail/route.tsx
 import { ImageResponse } from '@vercel/og';
 
-export const runtime = 'edge'; // ensures edge/serverless runtime
+export const runtime = 'edge';
 
 export async function GET() {
   try {
-    // Example: simple OG image with a colored background and text
     const width = 1200;
     const height = 630;
 
@@ -22,7 +21,7 @@ export async function GET() {
             color: '#fff',
             fontSize: 72,
             fontWeight: 700,
-            fontFamily: 'sans-serif',
+            fontFamily: 'sans-serif'
           }}
         >
           The TrutHz
