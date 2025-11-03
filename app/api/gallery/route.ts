@@ -1,11 +1,11 @@
 // app/api/gallery/route.ts
-import { NextResponse } from 'next/server';
-import { supabase } from '../../../lib/supabaseClient';
+import type { NextRequest } from 'next/server';
+import { supabase } from '../../../lib/db';
+import type { Database } from '../../../types/supabase';
 
-// Force Node.js runtime for server-side API (optional, remove if using Edge)
-export const runtime = 'nodejs';
+type GalleryItem = Database['public']['Tables']['gallery_items']['Row'];
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const { data, error } = await supabase
       .from('gallery_items')
@@ -14,13 +14,17 @@ export async function GET() {
       .limit(200);
 
     if (error) {
-      console.error('Supabase error:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+      });
     }
 
-    return NextResponse.json({ items: data || [] });
-  } catch (err: any) {
-    console.error('Unexpected error:', err);
-    return NextResponse.json({ error: 'Unexpected server error' }, { status: 500 });
+    return new Response(JSON.stringify(data as GalleryItem[]), {
+      status: 200,
+    });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: 'Unexpected error' }), {
+      status: 500,
+    });
   }
 }
