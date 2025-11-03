@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/db'; // adjust path if needed
+import { supabase } from '../lib/db';
 import type { Database } from '../types/supabase';
 
 type GalleryItem = Database['public']['Tables']['gallery_items']['Row'];
@@ -12,10 +12,9 @@ export default function Gallery() {
 
   const fetchGallery = async () => {
     setLoading(true);
-
     try {
       const { data, error } = await supabase
-        .from('gallery_items') // no generics needed
+        .from('gallery_items')
         .select('*')
         .order('resonance_score', { ascending: false })
         .limit(200);
