@@ -1,17 +1,13 @@
-// src/app/Pricing/page.tsx
+// Example: src/app/Pricing/page.tsx
 "use client";
 
-import { MotionSection } from "@/components/MotionDiv";
+import { MotionSection, fadeInUp } from "@/components/MotionDiv";
 
 export default function PricingPage() {
   return (
-    <MotionSection
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <MotionSection {...fadeInUp}>
       <h1>Pricing</h1>
-      {/* Your pricing content */}
+      {/* Other content */}
     </MotionSection>
   );
 }
