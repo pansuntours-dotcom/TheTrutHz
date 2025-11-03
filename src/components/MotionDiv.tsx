@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 
-// Basic motion exports
+// Motion components
 export const MotionDiv = motion.div;
 export const MotionSpan = motion.span;
 export const MotionSection = motion.section;
 
-// Optional: reusable animation presets
+// Reusable animation presets
 export const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
