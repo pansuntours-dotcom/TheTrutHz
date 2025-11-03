@@ -1,84 +1,62 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { createClient } from '@supabase/supabase-js';
 
-export interface GalleryItem {
+type GalleryItem = {
   id: number;
   title: string;
   image_url: string;
   description?: string;
-  resonance_score: number;
-  created_at: string;
-}
+  resonance_score?: number;
+  created_at?: string;
+};
 
-const Gallery: React.FC = () => {
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+export default function Gallery() {
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchGallery = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from<GalleryItem>('gallery_items')
-          .select('*')
-          .order('resonance_score', { ascending: false })
-          .limit(200);
+    const fetchGalleryItems = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from<GalleryItem, GalleryItem>('gallery_items')
+        .select('*')
+        .order('resonance_score', { ascending: false })
+        .limit(200);
 
-        if (error) throw error;
-
-        setGalleryItems(data || []);
-      } catch (err: any) {
-        setError(err.message || 'An unexpected error occurred');
-      } finally {
-        setLoading(false);
+      if (error) {
+        console.error('Error fetching gallery items:', error.message);
+      } else {
+        setItems(data || []);
       }
+      setLoading(false);
     };
 
-    fetchGallery();
+    fetchGalleryItems();
   }, []);
 
   if (loading) return <p>Loading gallery...</p>;
-  if (error) return <p>Error: {error}</p>;
-  if (!galleryItems.length) return <p>No gallery items found.</p>;
 
   return (
-    <div className="gallery-grid">
-      {galleryItems.map(item => (
-        <div key={item.id} className="gallery-item">
-          <img src={item.image_url} alt={item.title} />
-          <h3>{item.title}</h3>
-          {item.description && <p>{item.description}</p>}
-          <p>Resonance Score: {item.resonance_score}</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {items.map((item) => (
+        <div key={item.id} className="bg-gray-800 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+          <img
+            src={item.image_url}
+            alt={item.title}
+            className="w-full h-64 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+            {item.description && <p className="text-gray-400 mt-2">{item.description}</p>}
+          </div>
         </div>
       ))}
-      <style jsx>{`
-        .gallery-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: 1.5rem;
-          padding: 1rem;
-        }
-        .gallery-item {
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 0.5rem;
-          text-align: center;
-          transition: transform 0.2s;
-        }
-        .gallery-item:hover {
-          transform: scale(1.02);
-        }
-        img {
-          max-width: 100%;
-          height: auto;
-          border-radius: 4px;
-        }
-      `}</style>
     </div>
   );
-};
-
-export default Gallery;
+}
