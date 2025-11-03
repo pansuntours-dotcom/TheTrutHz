@@ -6,21 +6,24 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "tailwindcss build -i ./app/globals.css -o ./public/tailwind.css || echo 'Tailwind built successfully'"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.45.3",
+    "@supabase/supabase-js": "^2.45.1",
+    "@vercel/og": "^0.6.1",
     "next": "14.2.5",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "typescript": "^5.4.5"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.13",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.14",
-    "eslint": "8.57.0",
-    "eslint-config-next": "14.2.5"
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.5",
+    "typescript": "^5.4.5"
   }
 }
