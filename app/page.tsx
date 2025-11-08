@@ -1,12 +1,22 @@
-// app/page.tsx
-import React from 'react';
-import Gallery from '../components/Gallery';
+import React from "react";
+import Hero from "../components/Hero";
+import Gallery from "../components/Gallery";
+import StreamPlayer from "../components/StreamPlayer";
 
-export default function HomePage() {
+export default function Page() {
+  // Example: leave hlsUrl undefined for placeholder.
+  // Later: replace with real HLS URL (e.g. from Mux / Cloudflare Stream)
+  const hlsUrl: string | undefined = undefined;
+
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">The TrutHz Gallery</h1>
-      <Gallery />
-    </main>
+    <>
+      <Hero />
+      <div className="max-w-6xl mx-auto px-6">
+        <Gallery />
+        <div className="mt-12">
+          <StreamPlayer hlsUrl={hlsUrl} />
+        </div>
+      </div>
+    </>
   );
 }
